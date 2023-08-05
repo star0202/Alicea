@@ -42,9 +42,7 @@ class Clean extends Extension {
             )
               return
 
-            const newChannel = await chn.clone({
-              reason: 'Clean channel',
-            })
+            const newChannel = await chn.clone()
 
             await db.clean.update({
               where: {
