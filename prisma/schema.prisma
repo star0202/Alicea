@@ -31,3 +31,10 @@ model IgnoredUser {
   Log   Log?    @relation(fields: [logId], references: [id])
   logId String?
 }
+
+model Welcome {
+  id String @id @unique
+
+  user String?
+  bot  String?
+}
