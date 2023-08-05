@@ -1,7 +1,7 @@
 import { welcome } from '../../groups'
 import Confirm from '../../structures/components/Confirm'
 import db from '../../utils/database'
-import { Extension, listener } from '@pikokr/command.ts'
+import { Extension, listener, ownerOnly } from '@pikokr/command.ts'
 import type { GuildMember } from 'discord.js'
 import {
   ActionRowBuilder,
@@ -32,6 +32,7 @@ class Welcome extends Extension {
     await member.roles.add(role)
   }
 
+  @ownerOnly
   @welcome.command({
     name: 'set',
     description: '[OWNER] Set welcome role',
