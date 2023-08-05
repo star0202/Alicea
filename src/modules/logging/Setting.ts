@@ -23,7 +23,9 @@ class Setting extends Extension {
   ) {
     if (!i.guild) return
 
-    await i.deferReply()
+    await i.deferReply({
+      ephemeral: true,
+    })
 
     const data = await db.log.findUnique({
       where: {
@@ -84,7 +86,9 @@ class Setting extends Extension {
   ) {
     if (!i.guild) return
 
-    await i.deferReply()
+    await i.deferReply({
+      ephemeral: true,
+    })
 
     const data = await db.log.findUnique({
       where: {
@@ -166,7 +170,9 @@ class Setting extends Extension {
   async list(i: ChatInputCommandInteraction) {
     if (!i.guild) return
 
-    await i.deferReply()
+    await i.deferReply({
+      ephemeral: true,
+    })
 
     const data = await db.log.findUnique({
       where: {
