@@ -32,9 +32,9 @@ class Logging extends Extension {
 
     if (isIgnored(data, before.author, before.channel)) return
 
-    const channel = (await before.guild.channels.fetch(
+    const channel = before.guild.channels.cache.get(
       data.channel
-    )) as TextBasedChannel
+    ) as TextBasedChannel
 
     const msgDiff = diff(after, before)
 
@@ -83,9 +83,9 @@ class Logging extends Extension {
 
     if (isIgnored(data, msg.author, msg.channel)) return
 
-    const channel = (await msg.guild.channels.fetch(
+    const channel = msg.guild.channels.cache.get(
       data.channel
-    )) as TextBasedChannel
+    ) as TextBasedChannel
 
     await channel.send({
       embeds: [
@@ -122,9 +122,9 @@ class Logging extends Extension {
 
     if (isIgnored(data, member.user)) return
 
-    const channel = (await member.guild.channels.fetch(
+    const channel = member.guild.channels.cache.get(
       data.channel
-    )) as TextBasedChannel
+    ) as TextBasedChannel
 
     await channel.send({
       embeds: [
@@ -165,9 +165,9 @@ class Logging extends Extension {
 
     if (isIgnored(data, member.user)) return
 
-    const channel = (await member.guild.channels.fetch(
+    const channel = member.guild.channels.cache.get(
       data.channel
-    )) as TextBasedChannel
+    ) as TextBasedChannel
 
     await channel.send({
       embeds: [
