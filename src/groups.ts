@@ -9,3 +9,8 @@ export const welcome = new SubCommandGroup({
   name: 'welcome',
   description: 'Welcome',
 })
+
+export const clean = new SubCommandGroup({
+  name: 'clean',
+  description: 'Clean',
+})

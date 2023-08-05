@@ -38,3 +38,16 @@ model Welcome {
   user String?
   bot  String?
 }
+
+model Clean {
+  id String @id @unique
+
+  channels CleanChannel[]
+}
+
+model CleanChannel {
+  id String @id @unique
+
+  clean   Clean?  @relation(fields: [cleanId], references: [id])
+  cleanId String?
+}
