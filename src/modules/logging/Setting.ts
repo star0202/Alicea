@@ -1,20 +1,14 @@
-import { db } from '../../utils/database'
-import {
-  Extension,
-  applicationCommand,
-  option,
-  ownerOnly,
-} from '@pikokr/command.ts'
+import { logging } from '../../groups'
+import db from '../../utils/database'
+import { Extension, option, ownerOnly } from '@pikokr/command.ts'
 import {
   ApplicationCommandOptionType,
-  ApplicationCommandType,
   ChatInputCommandInteraction,
 } from 'discord.js'
 
 class Setting extends Extension {
   @ownerOnly
-  @applicationCommand({
-    type: ApplicationCommandType.ChatInput,
+  @logging.command({
     name: 'set',
     description: '[OWNER] Set log channel',
   })
@@ -69,8 +63,7 @@ class Setting extends Extension {
   }
 
   @ownerOnly
-  @applicationCommand({
-    type: ApplicationCommandType.ChatInput,
+  @logging.command({
     name: 'ignore',
     description: '[OWNER] Ignore channel or user',
   })
@@ -166,8 +159,7 @@ class Setting extends Extension {
   }
 
   @ownerOnly
-  @applicationCommand({
-    type: ApplicationCommandType.ChatInput,
+  @logging.command({
     name: 'list',
     description: '[OWNER] List settings',
   })

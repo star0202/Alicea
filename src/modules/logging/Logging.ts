@@ -1,5 +1,5 @@
 import { COLORS } from '../../constants'
-import { db } from '../../utils/database'
+import db from '../../utils/database'
 import { chunkedFields } from '../../utils/embed'
 import { isIgnored } from '../../utils/ignore'
 import { diff } from '../../utils/object'
@@ -27,8 +27,6 @@ class Logging extends Extension {
         ignoredUsers: true,
       },
     })
-
-    console.log(data)
 
     if (!data) return
 
