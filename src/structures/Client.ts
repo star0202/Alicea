@@ -14,7 +14,7 @@ export default class CustomClient extends CommandClient {
   constructor(logger: Logger<unknown>) {
     super(
       new Client({
-        intents: ['GuildMessages', 'Guilds', 'MessageContent'],
+        intents: ['GuildMessages', 'Guilds', 'MessageContent', 'GuildMembers'],
       }),
       logger
     )
