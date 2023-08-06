@@ -110,18 +110,20 @@ class Clean extends Extension {
 
     const chn = channel ?? i.channelId
 
-    const data = await db.clean.findUnique({
+    const data = await db.cleanChannel.findUnique({
       where: {
-        id: i.guild.id,
+        id: chn,
+        cleanId: i.guild.id,
       },
     })
 
     if (data) {
       await i.editReply(`✅ Turned off clean`)
 
-      await db.clean.delete({
+      await db.cleanChannel.delete({
         where: {
-          id: i.guild.id,
+          id: chn,
+          cleanId: i.guild.id,
         },
       })
 
