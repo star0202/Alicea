@@ -7,6 +7,53 @@ import {
   ChannelType,
   ChatInputCommandInteraction,
 } from 'discord.js'
+import type { GuildBasedChannel } from 'discord.js'
+
+const cleanChannel = async (chn: GuildBasedChannel) => {
+  if (!(chn.type === ChannelType.GuildText)) return
+
+  const newChannel = await chn.clone()
+
+  await db.clean.update({
+    where: {
+      id: chn.guildId,
+    },
+    data: {
+      channels: {
+        delete: {
+          id: chn.id,
+        },
+        create: {
+          id: newChannel.id,
+        },
+      },
+    },
+  })
+
+  await db.log.update({
+    where: {
+      id: chn.guildId,
+    },
+    data: {
+      ignoredChannels: {
+        delete: {
+          id: chn.id,
+        },
+        create: {
+          id: newChannel.id,
+        },
+      },
+    },
+  })
+
+  await chn.delete()
+
+  await newChannel.send({
+    content: '🗑️ *Cleaned!*',
+  })
+
+  return newChannel
+}
 
 class Clean extends Extension {
   private cron: CronManager
@@ -34,55 +81,7 @@ class Clean extends Extension {
 
             if (!chn) return
 
-            if (
-              !(
-                chn.type === ChannelType.GuildText ||
-                chn.type === ChannelType.GuildForum
-              )
-            )
-              return
-
-            const newChannel = await chn.clone()
-
-            await db.clean.update({
-              where: {
-                id: job.id,
-              },
-              data: {
-                channels: {
-                  delete: {
-                    id: channel.id,
-                  },
-                  create: {
-                    id: newChannel.id,
-                  },
-                },
-              },
-            })
-
-            await db.log.update({
-              where: {
-                id: job.id,
-              },
-              data: {
-                ignoredChannels: {
-                  delete: {
-                    id: channel.id,
-                  },
-                  create: {
-                    id: newChannel.id,
-                  },
-                },
-              },
-            })
-
-            await chn.delete()
-
-            if (newChannel.type === ChannelType.GuildText) {
-              await newChannel.send({
-                content: '🗑️ *Cleaned!*',
-              })
-            }
+            await cleanChannel(chn)
           })
         },
       })
@@ -179,6 +178,27 @@ class Clean extends Extension {
         .map((channel) => `<#${channel.id}>`)
         .join(', ')}`
     )
+  }
+
+  @ownerOnly
+  @clean.command({
+    name: 'now',
+    description: '[OWNER] Clean channel now',
+  })
+  async now(i: ChatInputCommandInteraction) {
+    if (!i.guild || i.channel?.type !== ChannelType.GuildText) return
+
+    await i.deferReply({
+      ephemeral: true,
+    })
+
+    const chn = await cleanChannel(i.channel)
+
+    if (!chn) {
+      await i.editReply(`❌ Failed to clean channel`)
+
+      return
+    }
   }
 }
 
