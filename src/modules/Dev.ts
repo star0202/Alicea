@@ -21,8 +21,8 @@ class Dev extends Extension {
     try {
       this.logger.error(err)
     } catch (e) {
-      console.log(err)
-      console.log(e)
+      console.error(err)
+      console.error(e)
     }
   }
 
