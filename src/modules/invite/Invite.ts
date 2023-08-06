@@ -1,11 +1,12 @@
 import { invite } from '../../groups'
-import { Extension } from '@pikokr/command.ts'
+import { Extension, ownerOnly } from '@pikokr/command.ts'
 import { ChannelType, ChatInputCommandInteraction } from 'discord.js'
 
 class Invite extends Extension {
+  @ownerOnly
   @invite.command({
     name: 'create',
-    description: 'Create invite',
+    description: '[OWNER] Create invite',
   })
   async create(i: ChatInputCommandInteraction) {
     if (!i.guild || !(i.channel?.type === ChannelType.GuildText)) return
