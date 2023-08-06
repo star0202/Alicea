@@ -18,6 +18,7 @@ class Invite extends Extension {
     const invite = await i.guild.invites.create(i.channel, {
       maxAge: 0,
       maxUses: 1,
+      unique: true,
     })
 
     await i.editReply({
