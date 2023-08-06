@@ -18,7 +18,12 @@ import { basename, join } from 'path'
 class Dev extends Extension {
   @listener({ event: 'applicationCommandInvokeError', emitter: 'cts' })
   async errorLogger(err: Error) {
-    this.logger.error(err)
+    try {
+      this.logger.error(err)
+    } catch (e) {
+      console.log(err)
+      console.log(e)
+    }
   }
 
   @listener({ event: 'interactionCreate' })
