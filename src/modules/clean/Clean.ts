@@ -130,16 +130,10 @@ class Clean extends Extension {
       return
     }
 
-    await db.clean.create({
+    await db.cleanChannel.create({
       data: {
-        id: i.guild.id,
-        channels: {
-          create: [
-            {
-              id: chn,
-            },
-          ],
-        },
+        id: chn,
+        cleanId: i.guild.id,
       },
     })
 
