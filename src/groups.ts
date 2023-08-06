@@ -14,3 +14,8 @@ export const clean = new SubCommandGroup({
   name: 'clean',
   description: 'Clean',
 })
+
+export const invite = new SubCommandGroup({
+  name: 'invite',
+  description: 'Invite',
+})
