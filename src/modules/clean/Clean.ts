@@ -60,6 +60,22 @@ class Clean extends Extension {
               },
             })
 
+            await db.log.update({
+              where: {
+                id: job.id,
+              },
+              data: {
+                ignoredChannels: {
+                  delete: {
+                    id: channel.id,
+                  },
+                  create: {
+                    id: newChannel.id,
+                  },
+                },
+              },
+            })
+
             await chn.delete()
 
             if (newChannel.type === ChannelType.GuildText) {
