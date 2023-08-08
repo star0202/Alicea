@@ -9,7 +9,9 @@ import {
 } from 'discord.js'
 import type { GuildBasedChannel } from 'discord.js'
 
-const cleanChannel = async (chn: GuildBasedChannel) => {
+const cleanChannel = async (chn?: GuildBasedChannel) => {
+  if (!chn) return
+
   if (!(chn.type === ChannelType.GuildText)) return
 
   const newChannel = await chn.clone()
@@ -61,30 +63,26 @@ class Clean extends Extension {
   constructor() {
     super()
     this.cron = new CronManager()
-  }
 
-  async start() {
-    const jobs = await db.clean.findMany({
-      include: {
-        channels: true,
+    this.cron.add({
+      cronTime: '0 6 * * *',
+      onTick: async () => {
+        const jobs = await db.clean.findMany({
+          include: {
+            channels: true,
+          },
+        })
+
+        Promise.all(
+          jobs
+            .flatMap((job) =>
+              job.channels.map((c) =>
+                this.client.guilds.cache.get(job.id)?.channels.cache.get(c.id)
+              )
+            )
+            .map(cleanChannel)
+        )
       },
-    })
-
-    jobs.forEach((job) => {
-      this.cron.add({
-        cronTime: '0 6 * * *',
-        onTick: () => {
-          job.channels.forEach(async (channel) => {
-            const chn = this.client.guilds.cache
-              .get(job.id)
-              ?.channels.cache.get(channel.id)
-
-            if (!chn) return
-
-            await cleanChannel(chn)
-          })
-        },
-      })
     })
   }
 
@@ -198,9 +196,4 @@ class Clean extends Extension {
   }
 }
 
-export const setup = async () => {
-  const clean = new Clean()
-  await clean.start()
-
-  return clean
-}
+export const setup = async () => new Clean()
