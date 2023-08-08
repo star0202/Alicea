@@ -141,7 +141,8 @@ class Logging extends Extension {
               name: 'Created At',
               value: `<t:${toTimestamp(member.user.createdAt)}:R>`,
               inline: true,
-            }
+            },
+            ...chunkedFields('Object', member)
           )
           .setTimestamp(),
       ],
@@ -190,7 +191,8 @@ class Logging extends Extension {
                 ? `<t:${toTimestamp(member.joinedAt)}:R>`
                 : 'N/A',
               inline: true,
-            }
+            },
+            ...chunkedFields('Object', member)
           )
           .setTimestamp(),
       ],
