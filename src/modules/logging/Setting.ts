@@ -199,6 +199,4 @@ class Setting extends Extension {
   }
 }
 
-export const setup = async () => {
-  return new Setting()
-}
+export const setup = async () => new Setting()

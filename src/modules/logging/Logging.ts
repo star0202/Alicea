@@ -200,6 +200,4 @@ class Logging extends Extension {
   }
 }
 
-export const setup = async () => {
-  return new Logging()
-}
+export const setup = async () => new Logging()
