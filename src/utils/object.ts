@@ -13,7 +13,7 @@ export const diff = (
     isEqual
   ).forEach(([k, v]) => {
     Object.defineProperty(diff.original, k, {
-      value: before[k as keyof object],
+      value: before[k as keyof typeof before],
       enumerable: true,
     })
 
