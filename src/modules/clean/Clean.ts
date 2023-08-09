@@ -174,10 +174,9 @@ class Clean extends Extension {
     )
   }
 
-  @ownerOnly
   @clean.command({
     name: 'now',
-    description: '[OWNER] Clean channel now',
+    description: 'Clean channel now',
   })
   async now(i: ChatInputCommandInteraction) {
     if (!i.guild || i.channel?.type !== ChannelType.GuildText) return
