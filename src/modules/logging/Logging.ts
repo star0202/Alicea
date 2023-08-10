@@ -1,10 +1,10 @@
 import { COLORS } from '../../constants'
-import db from '../../utils/database'
+import AliceaExt from '../../structures/Extension'
 import { chunkedFields } from '../../utils/embed'
 import { isIgnored } from '../../utils/ignore'
 import { diff } from '../../utils/object'
 import { toTimestamp } from '../../utils/timestamp'
-import { Extension, listener } from '@pikokr/command.ts'
+import { listener } from '@pikokr/command.ts'
 import type { GuildMember, Message, TextBasedChannel } from 'discord.js'
 import {
   ActionRowBuilder,
@@ -13,12 +13,12 @@ import {
   EmbedBuilder,
 } from 'discord.js'
 
-class Logging extends Extension {
+class Logging extends AliceaExt {
   @listener({ event: 'messageUpdate' })
   async messageUpdateLogger(before: Message, after: Message) {
     if (!before.guild) return
 
-    const data = await db.log.findUnique({
+    const data = await this.db.log.findUnique({
       where: {
         id: before.guild.id,
       },
@@ -69,7 +69,7 @@ class Logging extends Extension {
   async messageDeleteLogger(msg: Message) {
     if (!msg.guild) return
 
-    const data = await db.log.findUnique({
+    const data = await this.db.log.findUnique({
       where: {
         id: msg.guild.id,
       },
@@ -109,7 +109,7 @@ class Logging extends Extension {
   async memberJoinLogger(member: GuildMember) {
     if (!member.guild) return
 
-    const data = await db.log.findUnique({
+    const data = await this.db.log.findUnique({
       where: {
         id: member.guild.id,
       },
@@ -153,7 +153,7 @@ class Logging extends Extension {
   async memberLeaveLogger(member: GuildMember) {
     if (!member.guild) return
 
-    const data = await db.log.findUnique({
+    const data = await this.db.log.findUnique({
       where: {
         id: member.guild.id,
       },

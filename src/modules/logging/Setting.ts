@@ -1,12 +1,12 @@
 import { logging } from '../../groups'
-import db from '../../utils/database'
-import { Extension, option, ownerOnly } from '@pikokr/command.ts'
+import AliceaExt from '../../structures/Extension'
+import { option, ownerOnly } from '@pikokr/command.ts'
 import {
   ApplicationCommandOptionType,
   ChatInputCommandInteraction,
 } from 'discord.js'
 
-class Setting extends Extension {
+class Setting extends AliceaExt {
   @ownerOnly
   @logging.command({
     name: 'set',
@@ -27,7 +27,7 @@ class Setting extends Extension {
       ephemeral: true,
     })
 
-    const data = await db.log.findUnique({
+    const data = await this.db.log.findUnique({
       where: {
         id: i.guild.id,
       },
@@ -36,7 +36,7 @@ class Setting extends Extension {
     const chn = channel ?? i.channelId
 
     if (!data) {
-      await db.log.create({
+      await this.db.log.create({
         data: {
           id: i.guild.id,
           channel: chn,
@@ -51,7 +51,7 @@ class Setting extends Extension {
 
       await i.editReply(`✅ Log channel set to <#${chn}>`)
     } else {
-      await db.log.update({
+      await this.db.log.update({
         where: {
           id: i.guild.id,
         },
@@ -90,7 +90,7 @@ class Setting extends Extension {
       ephemeral: true,
     })
 
-    const data = await db.log.findUnique({
+    const data = await this.db.log.findUnique({
       where: {
         id: i.guild.id,
       },
@@ -104,7 +104,7 @@ class Setting extends Extension {
     if (channel || (!channel && !user)) {
       const chn = channel ?? i.channelId
 
-      const ignored = await db.ignoredChannel.findUnique({
+      const ignored = await this.db.ignoredChannel.findUnique({
         where: {
           id: chn,
           logId: i.guild.id,
@@ -112,7 +112,7 @@ class Setting extends Extension {
       })
 
       if (ignored) {
-        await db.ignoredChannel.delete({
+        await this.db.ignoredChannel.delete({
           where: {
             id: chn,
             logId: i.guild.id,
@@ -121,7 +121,7 @@ class Setting extends Extension {
 
         await i.editReply(`✅ <#${chn}> removed from ignored channels`)
       } else {
-        await db.ignoredChannel.create({
+        await this.db.ignoredChannel.create({
           data: {
             id: chn,
             logId: i.guild.id,
@@ -133,7 +133,7 @@ class Setting extends Extension {
     }
 
     if (user) {
-      const ignored = await db.ignoredUser.findUnique({
+      const ignored = await this.db.ignoredUser.findUnique({
         where: {
           id: user,
           logId: i.guild.id,
@@ -141,7 +141,7 @@ class Setting extends Extension {
       })
 
       if (ignored) {
-        await db.ignoredUser.delete({
+        await this.db.ignoredUser.delete({
           where: {
             id: user,
             logId: i.guild.id,
@@ -150,7 +150,7 @@ class Setting extends Extension {
 
         await i.editReply(`✅ <@${user}> removed from ignored users`)
       } else {
-        await db.ignoredUser.create({
+        await this.db.ignoredUser.create({
           data: {
             id: user,
             logId: i.guild.id,
@@ -174,7 +174,7 @@ class Setting extends Extension {
       ephemeral: true,
     })
 
-    const data = await db.log.findUnique({
+    const data = await this.db.log.findUnique({
       where: {
         id: i.guild.id,
       },

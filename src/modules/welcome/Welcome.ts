@@ -1,7 +1,7 @@
 import { welcome } from '../../groups'
+import AliceaExt from '../../structures/Extension'
 import Confirm from '../../structures/components/Confirm'
-import db from '../../utils/database'
-import { Extension, listener, ownerOnly } from '@pikokr/command.ts'
+import { listener, ownerOnly } from '@pikokr/command.ts'
 import type { GuildMember } from 'discord.js'
 import {
   ActionRowBuilder,
@@ -10,10 +10,10 @@ import {
   RoleSelectMenuBuilder,
 } from 'discord.js'
 
-class Welcome extends Extension {
+class Welcome extends AliceaExt {
   @listener({ event: 'guildMemberAdd' })
   async welcomeRole(member: GuildMember) {
-    const data = await db.welcome.findUnique({
+    const data = await this.db.welcome.findUnique({
       where: {
         id: member.guild.id,
       },
@@ -95,7 +95,7 @@ class Welcome extends Extension {
       .on('collect', async (c) => {
         await c.deferUpdate()
 
-        const data = await db.welcome.findUnique({
+        const data = await this.db.welcome.findUnique({
           where: {
             id: i.guild!.id,
           },
@@ -111,7 +111,7 @@ class Welcome extends Extension {
           }
         }
 
-        await db.welcome.upsert({
+        await this.db.welcome.upsert({
           where: {
             id: i.guild!.id,
           },

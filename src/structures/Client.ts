@@ -1,6 +1,7 @@
 import { config } from '../config'
 import { VERSION } from '../constants'
 import { CommandClient } from '@pikokr/command.ts'
+import { PrismaClient } from '@prisma/client'
 import { green } from 'chalk'
 import { ActivityType, Client } from 'discord.js'
 import { short } from 'git-rev-sync'
@@ -8,8 +9,10 @@ import { Jejudo } from 'jejudo'
 import { join } from 'path'
 import { Logger } from 'tslog'
 
-export default class CustomClient extends CommandClient {
+export default class Alicea extends CommandClient {
   private jejudo: Jejudo | null = null
+
+  readonly db: PrismaClient
 
   constructor(logger: Logger<unknown>) {
     super(
@@ -23,6 +26,11 @@ export default class CustomClient extends CommandClient {
 
     this.discord.on('debug', (msg) => {
       this.logger.debug(msg)
+    })
+
+    this.db = new PrismaClient({
+      errorFormat: 'pretty',
+      log: ['query', 'info', 'warn', 'error'],
     })
   }
 

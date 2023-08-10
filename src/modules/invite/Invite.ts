@@ -1,8 +1,9 @@
 import { invite } from '../../groups'
-import { Extension, ownerOnly } from '@pikokr/command.ts'
+import AliceaExt from '../../structures/Extension'
+import { ownerOnly } from '@pikokr/command.ts'
 import { ChannelType, ChatInputCommandInteraction } from 'discord.js'
 
-class Invite extends Extension {
+class Invite extends AliceaExt {
   @ownerOnly
   @invite.command({
     name: 'create',

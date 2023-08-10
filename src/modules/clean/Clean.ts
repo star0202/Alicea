@@ -1,7 +1,8 @@
 import { clean } from '../../groups'
 import CronManager from '../../structures/Cron'
-import db from '../../utils/database'
-import { Extension, option, ownerOnly } from '@pikokr/command.ts'
+import AliceaExt from '../../structures/Extension'
+import { option, ownerOnly } from '@pikokr/command.ts'
+import { PrismaClient } from '@prisma/client'
 import {
   ApplicationCommandOptionType,
   ChannelType,
@@ -9,7 +10,7 @@ import {
 } from 'discord.js'
 import type { GuildBasedChannel } from 'discord.js'
 
-const cleanChannel = async (chn?: GuildBasedChannel) => {
+const cleanChannel = async (db: PrismaClient, chn?: GuildBasedChannel) => {
   if (!chn) return
 
   if (!(chn.type === ChannelType.GuildText)) return
@@ -57,7 +58,7 @@ const cleanChannel = async (chn?: GuildBasedChannel) => {
   return newChannel
 }
 
-class Clean extends Extension {
+class Clean extends AliceaExt {
   private cron: CronManager
 
   constructor() {
@@ -67,7 +68,7 @@ class Clean extends Extension {
     this.cron.add({
       cronTime: '0 6 * * *',
       onTick: async () => {
-        const jobs = await db.clean.findMany({
+        const jobs = await this.db.clean.findMany({
           include: {
             channels: true,
           },
@@ -80,7 +81,7 @@ class Clean extends Extension {
                 this.client.guilds.cache.get(job.id)?.channels.cache.get(c.id)
               )
             )
-            .map(cleanChannel)
+            .map((c) => cleanChannel(this.db, c))
         )
       },
     })
@@ -108,7 +109,7 @@ class Clean extends Extension {
 
     const chn = channel ?? i.channelId
 
-    const data = await db.cleanChannel.findUnique({
+    const data = await this.db.cleanChannel.findUnique({
       where: {
         id: chn,
         cleanId: i.guild.id,
@@ -118,7 +119,7 @@ class Clean extends Extension {
     if (data) {
       await i.editReply(`✅ Turned off clean`)
 
-      await db.cleanChannel.delete({
+      await this.db.cleanChannel.delete({
         where: {
           id: chn,
           cleanId: i.guild.id,
@@ -128,7 +129,7 @@ class Clean extends Extension {
       return
     }
 
-    await db.cleanChannel.create({
+    await this.db.cleanChannel.create({
       data: {
         id: chn,
         cleanId: i.guild.id,
@@ -152,7 +153,7 @@ class Clean extends Extension {
       ephemeral: true,
     })
 
-    const data = await db.clean.findUnique({
+    const data = await this.db.clean.findUnique({
       where: {
         id: i.guild.id,
       },
@@ -185,7 +186,7 @@ class Clean extends Extension {
       ephemeral: true,
     })
 
-    const data = await db.cleanChannel.findUnique({
+    const data = await this.db.cleanChannel.findUnique({
       where: {
         id: i.channelId,
         cleanId: i.guild.id,
@@ -198,7 +199,7 @@ class Clean extends Extension {
       return
     }
 
-    const chn = await cleanChannel(i.channel)
+    const chn = await cleanChannel(this.db, i.channel)
 
     if (!chn) {
       await i.editReply(`❌ Failed to clean channel`)
