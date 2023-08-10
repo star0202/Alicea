@@ -185,6 +185,19 @@ class Clean extends Extension {
       ephemeral: true,
     })
 
+    const data = await db.cleanChannel.findUnique({
+      where: {
+        id: i.channelId,
+        cleanId: i.guild.id,
+      },
+    })
+
+    if (!data) {
+      await i.editReply(`❌ Channel is not allowed to clean`)
+
+      return
+    }
+
     const chn = await cleanChannel(i.channel)
 
     if (!chn) {
