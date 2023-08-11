@@ -4,10 +4,11 @@ import { EmbedField, codeBlock } from 'discord.js'
 
 export const chunkedFields = (
   name: string,
-  content: string | object
+  content: string | object,
+  ignore?: string[]
 ): EmbedField[] => {
   if (typeof content === 'object') {
-    content = toString(content)
+    content = toString(content, ignore)
   }
 
   const chunked = chunk(content, 1024 - 10)

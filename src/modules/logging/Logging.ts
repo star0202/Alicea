@@ -142,7 +142,7 @@ class Logging extends AliceaExt {
               value: `<t:${toTimestamp(member.user.createdAt)}:R>`,
               inline: true,
             },
-            ...chunkedFields('Object', member)
+            ...chunkedFields('Object', member, ['guild'])
           )
           .setTimestamp(),
       ],
@@ -192,7 +192,7 @@ class Logging extends AliceaExt {
                 : 'N/A',
               inline: true,
             },
-            ...chunkedFields('Object', member)
+            ...chunkedFields('Object', member, ['guild'])
           )
           .setTimestamp(),
       ],

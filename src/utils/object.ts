@@ -26,7 +26,13 @@ export const diff = (
   return diff
 }
 
-export const toString = (obj: object): string => {
+export const toString = (obj: object, ignore?: string[]): string => {
+  if (ignore) {
+    ignore.forEach((key) => {
+      delete obj[key as keyof typeof obj]
+    })
+  }
+
   return inspect(obj, {
     maxArrayLength: 200,
     depth: 2,
