@@ -27,13 +27,15 @@ export const diff = (
 }
 
 export const toString = (obj: object, ignore?: string[]): string => {
+  const copied = obj
+
   if (ignore) {
     ignore.forEach((key) => {
-      delete obj[key as keyof typeof obj]
+      delete copied[key as keyof typeof copied]
     })
   }
 
-  return inspect(obj, {
+  return inspect(copied, {
     maxArrayLength: 200,
     depth: 2,
   })
