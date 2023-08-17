@@ -27,7 +27,7 @@ export const diff = (
 }
 
 export const toString = (obj: object, ignore?: string[]): string => {
-  const copied = obj
+  const copied = structuredClone(obj)
 
   if (ignore) {
     ignore.forEach((key) => {
