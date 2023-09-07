@@ -19,3 +19,8 @@ export const invite = new SubCommandGroup({
   name: 'invite',
   description: 'Invite',
 })
+
+export const role = new SubCommandGroup({
+  name: 'role',
+  description: 'Role',
+})

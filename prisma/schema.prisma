@@ -2,52 +2,56 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+    provider = "sqlite"
+    url      = env("DATABASE_URL")
 }
 
 model Log {
-  id String @id @unique
+    id String @id @unique
 
-  channel         String
-  ignoredChannels IgnoredChannel[]
-  ignoredUsers    IgnoredUser[]
+    channel         String
+    ignoredChannels IgnoredChannel[]
+    ignoredUsers    IgnoredUser[]
 }
 
 model IgnoredChannel {
-  id String @id
+    id String @id
 
-  Log   Log?    @relation(fields: [logId], references: [id])
-  logId String?
+    Log   Log?    @relation(fields: [logId], references: [id])
+    logId String?
 }
 
 model IgnoredUser {
-  id String @id
+    id String @id
 
-  Log   Log?    @relation(fields: [logId], references: [id])
-  logId String?
+    Log   Log?    @relation(fields: [logId], references: [id])
+    logId String?
 }
 
 model Welcome {
-  id String @id @unique
+    id String @id @unique
 
-  user String?
-  bot  String?
+    user String?
+    bot  String?
 }
 
 model Clean {
-  id String @id @unique
+    id String @id @unique
 
-  channels CleanChannel[]
+    channels CleanChannel[]
 }
 
 model CleanChannel {
-  id String @id @unique
+    id String @id @unique
 
-  clean   Clean?  @relation(fields: [cleanId], references: [id])
-  cleanId String?
+    clean   Clean?  @relation(fields: [cleanId], references: [id])
+    cleanId String?
+}
+
+model Role {
+    id String @id @unique
 }
