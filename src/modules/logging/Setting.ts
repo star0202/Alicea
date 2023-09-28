@@ -51,16 +51,26 @@ class Setting extends AliceaExt {
 
       await i.editReply(`✅ Log channel set to <#${chn}>`)
     } else {
-      await this.db.log.update({
-        where: {
-          id: i.guild.id,
-        },
-        data: {
-          channel: chn,
-        },
-      })
+      if (data.channel === chn) {
+        await this.db.log.delete({
+          where: {
+            id: i.guild.id,
+          },
+        })
 
-      await i.editReply(`✅ Log channel changed to <#${chn}>`)
+        await i.editReply('✅ Log disabled')
+      } else {
+        await this.db.log.update({
+          where: {
+            id: i.guild.id,
+          },
+          data: {
+            channel: chn,
+          },
+        })
+
+        await i.editReply(`✅ Log channel changed to <#${chn}>`)
+      }
     }
   }
 
