@@ -48,7 +48,7 @@ model Clean {
 model CleanChannel {
     id String @id @unique
 
-    clean   Clean?  @relation(fields: [cleanId], references: [id])
+    clean   Clean?  @relation(fields: [cleanId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     cleanId String?
 }
 
