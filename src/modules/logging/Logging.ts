@@ -18,19 +18,15 @@ class Logging extends AliceaExt {
   async messageUpdateLogger(before: Message, after: Message) {
     if (!before.guild) return
 
-    const data = await this.db.log.findUnique({
+    const data = await this.db.logChannel.findUnique({
       where: {
         id: before.guild.id,
-      },
-      include: {
-        ignoredChannels: true,
-        ignoredUsers: true,
       },
     })
 
     if (!data) return
 
-    if (isIgnored(data, before.author, before.channel)) return
+    if (await isIgnored(data, this.db, before.author, before.channel)) return
 
     const channel = before.guild.channels.cache.get(
       data.channel
@@ -69,19 +65,15 @@ class Logging extends AliceaExt {
   async messageDeleteLogger(msg: Message) {
     if (!msg.guild) return
 
-    const data = await this.db.log.findUnique({
+    const data = await this.db.logChannel.findUnique({
       where: {
         id: msg.guild.id,
-      },
-      include: {
-        ignoredChannels: true,
-        ignoredUsers: true,
       },
     })
 
     if (!data) return
 
-    if (isIgnored(data, msg.author, msg.channel)) return
+    if (await isIgnored(data, this.db, msg.author, msg.channel)) return
 
     const channel = msg.guild.channels.cache.get(
       data.channel
@@ -109,18 +101,14 @@ class Logging extends AliceaExt {
   async memberJoinLogger(member: GuildMember) {
     if (!member.guild) return
 
-    const data = await this.db.log.findUnique({
+    const data = await this.db.logChannel.findUnique({
       where: {
         id: member.guild.id,
       },
-      include: {
-        ignoredUsers: true,
-      },
     })
-
     if (!data) return
 
-    if (isIgnored(data, member.user)) return
+    if (await isIgnored(data, this.db, member.user)) return
 
     const channel = member.guild.channels.cache.get(
       data.channel
@@ -153,18 +141,15 @@ class Logging extends AliceaExt {
   async memberLeaveLogger(member: GuildMember) {
     if (!member.guild) return
 
-    const data = await this.db.log.findUnique({
+    const data = await this.db.logChannel.findUnique({
       where: {
         id: member.guild.id,
-      },
-      include: {
-        ignoredUsers: true,
       },
     })
 
     if (!data) return
 
-    if (isIgnored(data, member.user)) return
+    if (await isIgnored(data, this.db, member.user)) return
 
     const channel = member.guild.channels.cache.get(
       data.channel

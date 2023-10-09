@@ -27,7 +27,7 @@ class Setting extends AliceaExt {
       ephemeral: true,
     })
 
-    const data = await this.db.log.findUnique({
+    const data = await this.db.logChannel.findUnique({
       where: {
         id: i.guild.id,
       },
@@ -36,23 +36,17 @@ class Setting extends AliceaExt {
     const chn = channel ?? i.channelId
 
     if (!data) {
-      await this.db.log.create({
+      await this.db.logChannel.create({
         data: {
           id: i.guild.id,
           channel: chn,
-          ignoredChannels: {
-            create: [],
-          },
-          ignoredUsers: {
-            create: [],
-          },
         },
       })
 
       await i.editReply(`✅ Log channel set to <#${chn}>`)
     } else {
       if (data.channel === chn) {
-        await this.db.log.delete({
+        await this.db.logChannel.delete({
           where: {
             id: i.guild.id,
           },
@@ -60,7 +54,7 @@ class Setting extends AliceaExt {
 
         await i.editReply('✅ Log disabled')
       } else {
-        await this.db.log.update({
+        await this.db.logChannel.update({
           where: {
             id: i.guild.id,
           },
@@ -100,7 +94,7 @@ class Setting extends AliceaExt {
       ephemeral: true,
     })
 
-    const data = await this.db.log.findUnique({
+    const data = await this.db.logChannel.findUnique({
       where: {
         id: i.guild.id,
       },
@@ -117,7 +111,7 @@ class Setting extends AliceaExt {
       const ignored = await this.db.ignoredChannel.findUnique({
         where: {
           id: chn,
-          logId: i.guild.id,
+          guild: i.guild.id,
         },
       })
 
@@ -125,7 +119,6 @@ class Setting extends AliceaExt {
         await this.db.ignoredChannel.delete({
           where: {
             id: chn,
-            logId: i.guild.id,
           },
         })
 
@@ -134,7 +127,7 @@ class Setting extends AliceaExt {
         await this.db.ignoredChannel.create({
           data: {
             id: chn,
-            logId: i.guild.id,
+            guild: i.guild.id,
           },
         })
 
@@ -146,7 +139,7 @@ class Setting extends AliceaExt {
       const ignored = await this.db.ignoredUser.findUnique({
         where: {
           id: user,
-          logId: i.guild.id,
+          guild: i.guild.id,
         },
       })
 
@@ -154,7 +147,7 @@ class Setting extends AliceaExt {
         await this.db.ignoredUser.delete({
           where: {
             id: user,
-            logId: i.guild.id,
+            guild: i.guild.id,
           },
         })
 
@@ -163,7 +156,7 @@ class Setting extends AliceaExt {
         await this.db.ignoredUser.create({
           data: {
             id: user,
-            logId: i.guild.id,
+            guild: i.guild.id,
           },
         })
 
@@ -184,13 +177,9 @@ class Setting extends AliceaExt {
       ephemeral: true,
     })
 
-    const data = await this.db.log.findUnique({
+    const data = await this.db.logChannel.findUnique({
       where: {
         id: i.guild.id,
-      },
-      include: {
-        ignoredChannels: true,
-        ignoredUsers: true,
       },
     })
 
@@ -199,10 +188,21 @@ class Setting extends AliceaExt {
       return
     }
 
+    const ignoredChannels = await this.db.ignoredChannel.findMany({
+      where: {
+        guild: i.guild.id,
+      },
+    })
+    const ignoredUsers = await this.db.ignoredUser.findMany({
+      where: {
+        guild: i.guild.id,
+      },
+    })
+
     await i.editReply(
-      `Log channel: <#${data.channel}>\nIgnored channels: ${data.ignoredChannels
+      `Log channel: <#${data.channel}>\nIgnored channels: ${ignoredChannels
         .map((chn) => `<#${chn.id}>`)
-        .join(', ')}\nIgnored users: ${data.ignoredUsers
+        .join(', ')}\nIgnored users: ${ignoredUsers
         .map((u) => `<@${u.id}>`)
         .join(', ')}`
     )

@@ -1,18 +1,25 @@
+import type Database from '../structures/Database'
 import type { Channel, User } from 'discord.js'
 
-export const isIgnored = (
-  data: {
-    ignoredChannels?: {
-      id: string
-    }[]
-    ignoredUsers: {
-      id: string
-    }[]
-  },
+export const isIgnored = async (
+  data: { id: string; channel: string },
+  db: Database,
   user?: User,
   channel?: Channel
-) =>
-  !data ||
-  data.ignoredChannels?.some((c) => c.id === channel?.id) ||
-  data.ignoredUsers.some((u) => u.id === user?.id) ||
-  user?.bot
+) => {
+  const ignoredChannels = await db.ignoredChannel.findMany({
+    where: {
+      guild: data.id,
+    },
+  })
+  const ignoredUsers = await db.ignoredUser.findMany({
+    where: {
+      guild: data.id,
+    },
+  })
+
+  if (ignoredChannels.some((c) => c.id === channel?.id)) return true
+  if (ignoredUsers.some((u) => u.id === user?.id)) return true
+
+  return false
+}

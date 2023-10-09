@@ -10,26 +10,22 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Log {
+model LogChannel {
     id String @id @unique
 
-    channel         String
-    ignoredChannels IgnoredChannel[]
-    ignoredUsers    IgnoredUser[]
+    channel String
 }
 
 model IgnoredChannel {
-    id String @id
+    id String @id @unique
 
-    Log   Log?    @relation(fields: [logId], references: [id])
-    logId String?
+    guild String
 }
 
 model IgnoredUser {
     id String @id
 
-    Log   Log?    @relation(fields: [logId], references: [id])
-    logId String?
+    guild String
 }
 
 model Welcome {
@@ -39,17 +35,10 @@ model Welcome {
     bot  String?
 }
 
-model Clean {
-    id String @id @unique
-
-    channels CleanChannel[]
-}
-
 model CleanChannel {
     id String @id @unique
 
-    clean   Clean?  @relation(fields: [cleanId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    cleanId String?
+    guild String
 }
 
 model Role {

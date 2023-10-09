@@ -17,35 +17,21 @@ const cleanChannel = async (db: PrismaClient, chn?: GuildBasedChannel) => {
 
   const newChannel = await chn.clone()
 
-  await db.clean.update({
+  await db.cleanChannel.update({
     where: {
-      id: chn.guildId,
+      id: chn.id,
     },
     data: {
-      channels: {
-        delete: {
-          id: chn.id,
-        },
-        create: {
-          id: newChannel.id,
-        },
-      },
+      id: newChannel.id,
     },
   })
 
-  await db.log.update({
+  await db.ignoredChannel.update({
     where: {
-      id: chn.guildId,
+      id: chn.id,
     },
     data: {
-      ignoredChannels: {
-        delete: {
-          id: chn.id,
-        },
-        create: {
-          id: newChannel.id,
-        },
-      },
+      id: newChannel.id,
     },
   })
 
@@ -68,18 +54,13 @@ class Clean extends AliceaExt {
     this.cron.add({
       cronTime: '0 6 * * *',
       onTick: async () => {
-        const jobs = await this.db.clean.findMany({
-          include: {
-            channels: true,
-          },
-        })
+        const jobs = await this.db.cleanChannel.findMany()
 
         Promise.all(
           jobs
-            .flatMap((job) =>
-              job.channels.map((c) =>
-                this.client.guilds.cache.get(job.id)?.channels.cache.get(c.id)
-              )
+            .flatMap(
+              (job) =>
+                this.client.channels.cache.get(job.id) as GuildBasedChannel
             )
             .map((c) => cleanChannel(this.db, c))
         )
@@ -112,7 +93,6 @@ class Clean extends AliceaExt {
     const data = await this.db.cleanChannel.findUnique({
       where: {
         id: chn,
-        cleanId: i.guild.id,
       },
     })
 
@@ -122,7 +102,6 @@ class Clean extends AliceaExt {
       await this.db.cleanChannel.delete({
         where: {
           id: chn,
-          cleanId: i.guild.id,
         },
       })
 
@@ -132,7 +111,7 @@ class Clean extends AliceaExt {
     await this.db.cleanChannel.create({
       data: {
         id: chn,
-        cleanId: i.guild.id,
+        guild: i.guild.id,
       },
     })
 
@@ -153,12 +132,9 @@ class Clean extends AliceaExt {
       ephemeral: true,
     })
 
-    const data = await this.db.clean.findUnique({
+    const data = await this.db.cleanChannel.findMany({
       where: {
-        id: i.guild.id,
-      },
-      include: {
-        channels: true,
+        guild: i.guild.id,
       },
     })
 
@@ -169,7 +145,7 @@ class Clean extends AliceaExt {
     }
 
     await i.editReply(
-      `✅ Channels to clean:\n${data.channels
+      `✅ Channels to clean:\n${data
         .map((channel) => `<#${channel.id}>`)
         .join(', ')}`
     )
@@ -189,7 +165,6 @@ class Clean extends AliceaExt {
     const data = await this.db.cleanChannel.findUnique({
       where: {
         id: i.channelId,
-        cleanId: i.guild.id,
       },
     })
 
