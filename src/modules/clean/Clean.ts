@@ -17,7 +17,7 @@ const cleanChannel = async (db: PrismaClient, chn?: GuildBasedChannel) => {
 
   const newChannel = await chn.clone()
 
-  await db.cleanChannel.update({
+  await db.cleanChannel.updateMany({
     where: {
       id: chn.id,
     },
@@ -26,7 +26,7 @@ const cleanChannel = async (db: PrismaClient, chn?: GuildBasedChannel) => {
     },
   })
 
-  await db.ignoredChannel.update({
+  await db.ignoredChannel.updateMany({
     where: {
       id: chn.id,
     },
