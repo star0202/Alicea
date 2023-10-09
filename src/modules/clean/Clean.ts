@@ -80,7 +80,13 @@ class Clean extends AliceaExt {
       name: 'channel',
       description: 'Channel to clean',
     })
-    channel?: string
+    channel?: string,
+    @option({
+      type: ApplicationCommandOptionType.Boolean,
+      name: 'cleanAllowed',
+      description: 'Clean allowed?',
+    })
+    cleanAllowed?: boolean
   ) {
     if (!i.guild) return
 
@@ -112,6 +118,7 @@ class Clean extends AliceaExt {
       data: {
         id: chn,
         guild: i.guild.id,
+        cleanAllowed: cleanAllowed,
       },
     })
 
@@ -170,6 +177,12 @@ class Clean extends AliceaExt {
 
     if (!data) {
       await i.editReply(`❌ Channel is not allowed to clean`)
+
+      return
+    }
+
+    if (!data.cleanAllowed) {
+      await i.editReply(`❌ Clean is not allowed`)
 
       return
     }

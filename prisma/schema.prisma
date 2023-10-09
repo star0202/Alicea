@@ -39,6 +39,7 @@ model CleanChannel {
     id String @id @unique
 
     guild String
+    cleanAllowed Boolean @default(false)
 }
 
 model Role {
