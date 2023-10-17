@@ -18,6 +18,7 @@ export const isIgnored = async (
     },
   })
 
+  if (user?.bot) return true
   if (ignoredChannels.some((c) => c.id === channel?.id)) return true
   if (ignoredUsers.some((u) => u.id === user?.id)) return true
 
