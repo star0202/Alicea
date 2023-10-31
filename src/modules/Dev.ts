@@ -149,7 +149,7 @@ class Dev extends AliceaExt {
 
   @listener({ event: 'messageCreate' })
   async eval(msg: Message) {
-    if (!this.commandClient.isOwner(msg.author)) return
+    if (!this.commandClient.owners.has(msg.author.id)) return
 
     if (!msg.content.startsWith(`<@${this.client.user?.id}> eval`)) return
 
