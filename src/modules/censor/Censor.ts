@@ -22,11 +22,24 @@ class Censor extends AliceaExt {
       },
     })
 
+    const content = msg.content
+      .normalize()
+      .replace(/[!?@#$%^&*():;+-=~{}<>_[\]|\\"',./`₩\d]/g, '')
+      .replace(
+        /[\u2000-\u2BFF\uFF00-\uFFEF\u3000-\u303F\u00A0-\u00BB\u00F7\u00D7]/g,
+        ''
+      )
+      .replace(
+        // eslint-disable-next-line no-misleading-character-class
+        /[\s\t\d\u200B\u115F\u1160\u3164\uFFA0\u2800\u17B5\u1CBB\u1CBC]/g,
+        ''
+      )
+
     Promise.all(
       rules.map(async (rule) => {
         const regex = new RegExp(rule.regex, 'g')
 
-        if (regex.test(msg.content)) {
+        if (regex.test(content)) {
           await msg.reply({
             content: `You can't say that!\nReason: ||${rule.reason}||, Regex: ||/${rule.regex}/g||`,
           })
