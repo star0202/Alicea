@@ -38,10 +38,17 @@ model Welcome {
 model CleanChannel {
     id String @id @unique
 
-    guild String
+    guild        String
     cleanAllowed Boolean @default(false)
 }
 
 model Role {
     id String @id @unique
+}
+
+model Censor {
+    id String @id @unique
+
+    regex  String
+    reason String
 }

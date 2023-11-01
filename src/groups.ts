@@ -24,3 +24,8 @@ export const role = new SubCommandGroup({
   name: 'role',
   description: 'Role',
 })
+
+export const censor = new SubCommandGroup({
+  name: 'censor',
+  description: 'Censor',
+})
