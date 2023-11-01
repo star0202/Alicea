@@ -83,7 +83,7 @@ class Clean extends AliceaExt {
     channel?: string,
     @option({
       type: ApplicationCommandOptionType.Boolean,
-      name: 'cleanAllowed',
+      name: 'clean_allowed',
       description: 'Clean allowed?',
     })
     cleanAllowed?: boolean
