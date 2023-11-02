@@ -31,6 +31,8 @@ class Censor extends AliceaExt {
         ''
       )
 
+    console.log(rules)
+
     Promise.all(
       rules.map(async (rule) => {
         const regex = new RegExp(rule.regex, 'g')
@@ -92,18 +94,28 @@ class Censor extends AliceaExt {
     name: 'list',
     description: '[OWNER] List rules',
   })
-  async listRules(i: ChatInputCommandInteraction) {
+  async listRules(
+    i: ChatInputCommandInteraction,
+    @option({
+      type: ApplicationCommandOptionType.Boolean,
+      name: 'cache',
+      description: 'Cache',
+    })
+    cache = false
+  ) {
     if (!i.guild) return
 
     await i.deferReply({
       ephemeral: true,
     })
 
-    const rules = await this.db.censor.findMany({
-      where: {
-        id: i.guild.id,
-      },
-    })
+    const rules = cache
+      ? this.commandClient.rules.get(i.guild.id) ?? []
+      : await this.db.censor.findMany({
+          where: {
+            id: i.guild.id,
+          },
+        })
 
     if (!rules.length) {
       await i.editReply('No rules found')
