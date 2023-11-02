@@ -9,44 +9,14 @@ import {
   StringSelectMenuBuilder,
 } from 'discord.js'
 
-type Rule = {
-  regex: string
-  reason: string
-}
-
 class Censor extends AliceaExt {
-  private cache: Map<string, Rule[]>
-
-  constructor() {
-    super()
-
-    this.cache = new Map()
-  }
-
-  async _reloadRules() {
-    const rules = await this.db.censor.findMany()
-
-    rules.forEach((rule) => {
-      const id = rule.id
-
-      if (!this.cache.has(id)) {
-        this.cache.set(id, [])
-      }
-
-      this.cache.get(id)?.push({
-        regex: rule.regex,
-        reason: rule.reason,
-      })
-    })
-  }
-
   @listener({
     event: 'messageCreate',
   })
   async censorMessage(msg: Message) {
     if (msg.author.bot || !msg.guild) return
 
-    const rules = this.cache.get(msg.guild.id) ?? []
+    const rules = this.commandClient.rules.get(msg.guild.id) ?? []
 
     const content = msg.content
       .normalize()
@@ -112,7 +82,7 @@ class Censor extends AliceaExt {
       },
     })
 
-    await this._reloadRules()
+    await this.commandClient.reloadRules()
 
     await i.editReply('Done')
   }
@@ -217,7 +187,7 @@ class Censor extends AliceaExt {
         })
       })
 
-    await this._reloadRules()
+    await this.commandClient.reloadRules()
   }
 
   @ownerOnly
@@ -230,16 +200,10 @@ class Censor extends AliceaExt {
       ephemeral: true,
     })
 
-    await this._reloadRules()
+    await this.commandClient.reloadRules()
 
     await i.editReply('Done')
   }
 }
 
-export const setup = async () => {
-  const censor = new Censor()
-
-  await censor._reloadRules()
-
-  return censor
-}
+export const setup = async () => new Censor()

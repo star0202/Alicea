@@ -1,5 +1,6 @@
 import { config } from '../config'
 import { VERSION } from '../constants'
+import type { Rule } from '../types'
 import Database from './Database'
 import { CommandClient } from '@pikokr/command.ts'
 import { green } from 'chalk'
@@ -13,6 +14,8 @@ export default class Alicea extends CommandClient {
   private jejudo: Jejudo | null = null
 
   readonly db: Database
+
+  rules: Map<string, Rule[]> = new Map()
 
   constructor(logger: Logger<unknown>) {
     super(
@@ -64,6 +67,8 @@ export default class Alicea extends CommandClient {
     this.logger.info(`Logged in as: ${green(client.user.tag)}`)
 
     await this.fetchOwners()
+
+    await this.reloadRules()
   }
 
   async start() {
@@ -72,5 +77,22 @@ export default class Alicea extends CommandClient {
     await this.discord.login(config.token)
 
     await this.getApplicationCommandsExtension()?.sync()
+  }
+
+  async reloadRules() {
+    const rules = await this.db.censor.findMany()
+
+    rules.forEach((rule) => {
+      const id = rule.id
+
+      if (!this.rules.has(id)) {
+        this.rules.set(id, [])
+      }
+
+      this.rules.get(id)?.push({
+        regex: rule.regex,
+        reason: rule.reason,
+      })
+    })
   }
 }
