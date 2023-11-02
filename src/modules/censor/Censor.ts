@@ -1,5 +1,4 @@
 import { censor } from '../../groups'
-import type Database from '../../structures/Database'
 import AliceaExt from '../../structures/Extension'
 import { listener, option, ownerOnly } from '@pikokr/command.ts'
 import type { Message, StringSelectMenuInteraction } from 'discord.js'
