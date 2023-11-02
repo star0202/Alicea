@@ -1,4 +1,5 @@
 import { censor } from '../../groups'
+import type Database from '../../structures/Database'
 import AliceaExt from '../../structures/Extension'
 import { listener, option, ownerOnly } from '@pikokr/command.ts'
 import type { Message, StringSelectMenuInteraction } from 'discord.js'
@@ -9,18 +10,44 @@ import {
   StringSelectMenuBuilder,
 } from 'discord.js'
 
+type Rule = {
+  regex: string
+  reason: string
+}
+
 class Censor extends AliceaExt {
+  private cache: Map<string, Rule[]>
+
+  constructor() {
+    super()
+
+    this.cache = new Map()
+  }
+
+  async _reloadRules() {
+    const rules = await this.db.censor.findMany()
+
+    rules.forEach((rule) => {
+      const id = rule.id
+
+      if (!this.cache.has(id)) {
+        this.cache.set(id, [])
+      }
+
+      this.cache.get(id)?.push({
+        regex: rule.regex,
+        reason: rule.reason,
+      })
+    })
+  }
+
   @listener({
     event: 'messageCreate',
   })
   async censorMessage(msg: Message) {
     if (msg.author.bot || !msg.guild) return
 
-    const rules = await this.db.censor.findMany({
-      where: {
-        id: msg.guild.id,
-      },
-    })
+    const rules = this.cache.get(msg.guild.id) ?? []
 
     const content = msg.content
       .normalize()
@@ -85,6 +112,8 @@ class Censor extends AliceaExt {
         reason,
       },
     })
+
+    await this._reloadRules()
 
     await i.editReply('Done')
   }
@@ -188,7 +217,30 @@ class Censor extends AliceaExt {
           components: [],
         })
       })
+
+    await this._reloadRules()
+  }
+
+  @ownerOnly
+  @censor.command({
+    name: 'reload',
+    description: '[OWNER] Reload every rules',
+  })
+  async reloadRules(i: ChatInputCommandInteraction) {
+    await i.deferReply({
+      ephemeral: true,
+    })
+
+    await this._reloadRules()
+
+    await i.editReply('Done')
   }
 }
 
-export const setup = async () => new Censor()
+export const setup = async () => {
+  const censor = new Censor()
+
+  await censor._reloadRules()
+
+  return censor
+}
