@@ -82,6 +82,8 @@ export default class Alicea extends CommandClient {
   async reloadRules() {
     const rules = await this.db.censor.findMany()
 
+    this.rules = new Map()
+
     rules.forEach((rule) => {
       const id = rule.id
 
