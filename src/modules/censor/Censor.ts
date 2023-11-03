@@ -31,8 +31,6 @@ class Censor extends AliceaExt {
         ''
       )
 
-    console.log(rules)
-
     Promise.all(
       rules.map(async (rule) => {
         const regex = new RegExp(rule.regex, 'g')
