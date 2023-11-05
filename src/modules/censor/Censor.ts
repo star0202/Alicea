@@ -37,7 +37,7 @@ class Censor extends AliceaExt {
 
         if (regex.test(content)) {
           await msg.reply({
-            content: `You can't say that!\nReason: ||${rule.reason}||, Regex: ||/${rule.regex}/g||`,
+            content: `<@${msg.author.id}>, You can't say that!\nReason: ||${rule.reason}||, Regex: ||/${rule.regex}/g||`,
           })
 
           await msg.delete()
@@ -195,9 +195,9 @@ class Censor extends AliceaExt {
           content: 'Done',
           components: [],
         })
-      })
 
-    await this.commandClient.reloadRules()
+        await this.commandClient.reloadRules()
+      })
   }
 
   @ownerOnly
