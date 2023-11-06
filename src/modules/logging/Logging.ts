@@ -91,7 +91,7 @@ class Logging extends AliceaExt {
           .addFields(
             { name: 'User', value: `<@${msg.author.id}>`, inline: true },
             { name: 'Channel', value: `<#${msg.channelId}>`, inline: true },
-            ...chunkedFields('Content', msg, ['author'])
+            ...chunkedFields('Object', msg, ['author'])
           ),
       ],
     })
