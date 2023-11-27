@@ -5,7 +5,12 @@ import { isIgnored } from '../../utils/ignore'
 import { diff } from '../../utils/object'
 import { toTimestamp } from '../../utils/timestamp'
 import { listener } from '@pikokr/command.ts'
-import type { GuildMember, Message, TextBasedChannel } from 'discord.js'
+import type {
+  GuildMember,
+  Message,
+  TextBasedChannel,
+  VoiceState,
+} from 'discord.js'
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -37,7 +42,7 @@ class Logging extends AliceaExt {
     await channel.send({
       embeds: [
         new EmbedBuilder()
-          .setTitle('Update')
+          .setTitle('Message Updated')
           .setColor(COLORS.YELLOW)
           .setAuthor({
             name: `${after.author.tag} (${after.author.id})`,
@@ -82,7 +87,7 @@ class Logging extends AliceaExt {
     await channel.send({
       embeds: [
         new EmbedBuilder()
-          .setTitle('Deleted')
+          .setTitle('Message Deleted')
           .setColor(COLORS.RED)
           .setAuthor({
             name: `${msg.author.tag} (${msg.author.id})`,
@@ -117,7 +122,7 @@ class Logging extends AliceaExt {
     await channel.send({
       embeds: [
         new EmbedBuilder()
-          .setTitle('Joined')
+          .setTitle('Member Joined')
           .setColor(COLORS.GREEN)
           .setAuthor({
             name: `${member.user.tag} (${member.user.id})`,
@@ -158,7 +163,7 @@ class Logging extends AliceaExt {
     await channel.send({
       embeds: [
         new EmbedBuilder()
-          .setTitle('Left')
+          .setTitle('Member Left')
           .setColor(COLORS.RED)
           .setAuthor({
             name: `${member.user.tag} (${member.user.id})`,
@@ -181,6 +186,116 @@ class Logging extends AliceaExt {
           )
           .setTimestamp(),
       ],
+    })
+  }
+
+  @listener({ event: 'voiceStateUpdate' })
+  async voiceJoinandLeaveLogger(oldState: VoiceState, newState: VoiceState) {
+    if (!oldState.member || !newState.member) return
+
+    const data = await this.db.logChannel.findUnique({
+      where: {
+        id: newState.guild.id,
+      },
+    })
+
+    if (!data) return
+
+    if (await isIgnored(data, this.db, newState.member.user)) return
+
+    const channel = newState.guild.channels.cache.get(
+      data.channel
+    ) as TextBasedChannel
+
+    const embed = new EmbedBuilder()
+      .setAuthor({
+        name: `${newState.member.user.tag} (${newState.member.user.id})`,
+        iconURL: newState.member.user.displayAvatarURL(),
+      })
+      .setTimestamp()
+
+    const stateDiff = diff(newState, oldState)
+
+    if (oldState.channelId && !newState.channelId) {
+      embed
+        .setTitle('Left Voice Channel')
+        .setColor(COLORS.RED)
+        .addFields(
+          {
+            name: 'User',
+            value: `<@${newState.member.user.id}>`,
+            inline: true,
+          },
+          {
+            name: 'Channel',
+            value: `<#${oldState.channelId}>`,
+            inline: true,
+          },
+          ...chunkedFields('Old', stateDiff.original),
+          ...chunkedFields('New', stateDiff.updated)
+        )
+    } else if (newState.channelId && !oldState.channelId) {
+      embed
+        .setTitle('Joined Voice Channel')
+        .setColor(COLORS.GREEN)
+        .addFields(
+          {
+            name: 'User',
+            value: `<@${newState.member.user.id}>`,
+            inline: true,
+          },
+          {
+            name: 'Channel',
+            value: `<#${newState.channelId}>`,
+            inline: true,
+          },
+          ...chunkedFields('Old', stateDiff.original),
+          ...chunkedFields('New', stateDiff.updated)
+        )
+    } else if (
+      oldState.channelId &&
+      newState.channelId &&
+      oldState.channelId !== newState.channelId
+    ) {
+      embed
+        .setTitle('Moved Voice Channel')
+        .setColor(COLORS.YELLOW)
+        .addFields(
+          {
+            name: 'User',
+            value: `<@${newState.member.user.id}>`,
+            inline: true,
+          },
+          {
+            name: 'Old Channel',
+            value: `<#${oldState.channelId}>`,
+            inline: true,
+          },
+          {
+            name: 'New Channel',
+            value: `<#${newState.channelId}>`,
+            inline: true,
+          },
+          ...chunkedFields('Old', stateDiff.original),
+          ...chunkedFields('New', stateDiff.updated)
+        )
+    } else {
+      embed
+        .setTitle('Voice State Updated')
+        .setColor(COLORS.YELLOW)
+        .addFields(
+          {
+            name: 'User',
+            value: `<@${newState.member.user.id}>`,
+            inline: true,
+          },
+          ...chunkedFields('Old', stateDiff.original),
+          ...chunkedFields('New', stateDiff.updated)
+        )
+    }
+
+    await channel.send({
+      embeds: [embed],
     })
   }
 }

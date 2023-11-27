@@ -20,7 +20,13 @@ export default class Alicea extends CommandClient {
   constructor(logger: Logger<unknown>) {
     super(
       new Client({
-        intents: ['GuildMessages', 'Guilds', 'MessageContent', 'GuildMembers'],
+        intents: [
+          'GuildMessages',
+          'Guilds',
+          'MessageContent',
+          'GuildMembers',
+          'GuildVoiceStates',
+        ],
       }),
       logger
     )
