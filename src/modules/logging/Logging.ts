@@ -213,6 +213,11 @@ class Logging extends AliceaExt {
         iconURL: newState.member.user.displayAvatarURL(),
       })
       .setTimestamp()
+      .addFields({
+        name: 'User',
+        value: `<@${newState.member.user.id}>`,
+        inline: true,
+      })
 
     const stateDiff = diff(newState, oldState)
 
@@ -221,11 +226,6 @@ class Logging extends AliceaExt {
         .setTitle('Left Voice Channel')
         .setColor(COLORS.RED)
         .addFields(
-          {
-            name: 'User',
-            value: `<@${newState.member.user.id}>`,
-            inline: true,
-          },
           {
             name: 'Channel',
             value: `<#${oldState.channelId}>`,
@@ -239,11 +239,6 @@ class Logging extends AliceaExt {
         .setTitle('Joined Voice Channel')
         .setColor(COLORS.GREEN)
         .addFields(
-          {
-            name: 'User',
-            value: `<@${newState.member.user.id}>`,
-            inline: true,
-          },
           {
             name: 'Channel',
             value: `<#${newState.channelId}>`,
@@ -262,11 +257,6 @@ class Logging extends AliceaExt {
         .setColor(COLORS.YELLOW)
         .addFields(
           {
-            name: 'User',
-            value: `<@${newState.member.user.id}>`,
-            inline: true,
-          },
-          {
             name: 'Old Channel',
             value: `<#${oldState.channelId}>`,
             inline: true,
@@ -284,11 +274,6 @@ class Logging extends AliceaExt {
         .setTitle('Voice State Updated')
         .setColor(COLORS.YELLOW)
         .addFields(
-          {
-            name: 'User',
-            value: `<@${newState.member.user.id}>`,
-            inline: true,
-          },
           ...chunkedFields('Old', stateDiff.original),
           ...chunkedFields('New', stateDiff.updated)
         )
