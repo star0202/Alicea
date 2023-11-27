@@ -153,7 +153,12 @@ class Clean extends AliceaExt {
 
     await i.editReply(
       `✅ Channels to clean:\n${data
-        .map((channel) => `<#${channel.id}>`)
+        .map(
+          (channel) =>
+            `<#${channel.id}>${
+              channel.cleanAllowed ? '(manual clean allowed)' : ''
+            }`
+        )
         .join(', ')}`
     )
   }
