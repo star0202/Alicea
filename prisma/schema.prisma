@@ -47,7 +47,7 @@ model Role {
 }
 
 model Censor {
-    id String @id @unique
+    id String @id
 
     regex  String
     reason String
