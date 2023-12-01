@@ -1,7 +1,7 @@
 import { COLORS } from '../../constants'
+import type Database from '../../structures/Database'
+import AliceaEmbed from '../../structures/Embed'
 import AliceaExt from '../../structures/Extension'
-import { chunkedFields } from '../../utils/embed'
-import { isIgnored } from '../../utils/ignore'
 import { diff } from '../../utils/object'
 import { toTimestamp } from '../../utils/timestamp'
 import { listener } from '@pikokr/command.ts'
@@ -11,12 +11,32 @@ import type {
   TextBasedChannel,
   VoiceState,
 } from 'discord.js'
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder,
-} from 'discord.js'
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
+import type { Channel, User } from 'discord.js'
+
+const isIgnored = async (
+  data: { id: string; channel: string },
+  db: Database,
+  user?: User,
+  channel?: Channel
+) => {
+  const ignoredChannels = await db.ignoredChannel.findMany({
+    where: {
+      guild: data.id,
+    },
+  })
+  const ignoredUsers = await db.ignoredUser.findMany({
+    where: {
+      guild: data.id,
+    },
+  })
+
+  if (user?.bot) return true
+  if (ignoredChannels.some((c) => c.id === channel?.id)) return true
+  if (ignoredUsers.some((u) => u.id === user?.id)) return true
+
+  return false
+}
 
 class Logging extends AliceaExt {
   @listener({ event: 'messageUpdate' })
@@ -41,19 +61,26 @@ class Logging extends AliceaExt {
 
     await channel.send({
       embeds: [
-        new EmbedBuilder()
+        new AliceaEmbed()
           .setTitle('Message Updated')
           .setColor(COLORS.YELLOW)
-          .setAuthor({
-            name: `${after.author.tag} (${after.author.id})`,
-            iconURL: after.author.displayAvatarURL(),
-          })
+          .setDetailedAuthor(before.author)
           .addFields(
             { name: 'User', value: `<@${after.author.id}>`, inline: true },
-            { name: 'Channel', value: `<#${after.channelId}>`, inline: true },
-            ...chunkedFields('Original', msgDiff.original),
-            ...chunkedFields('Updated', msgDiff.updated)
-          ),
+            { name: 'Channel', value: `<#${after.channelId}>`, inline: true }
+          )
+          .addChunkedFields(
+            {
+              name: 'Original',
+              value: msgDiff.original,
+            },
+            {
+              name: 'Updated',
+              value: msgDiff.updated,
+              ignore: ['author'],
+            }
+          )
+          .setUNIXTimestamp(),
       ],
       components: [
         new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -86,18 +113,20 @@ class Logging extends AliceaExt {
 
     await channel.send({
       embeds: [
-        new EmbedBuilder()
+        new AliceaEmbed()
           .setTitle('Message Deleted')
           .setColor(COLORS.RED)
-          .setAuthor({
-            name: `${msg.author.tag} (${msg.author.id})`,
-            iconURL: msg.author.displayAvatarURL(),
-          })
+          .setDetailedAuthor(msg.author)
           .addFields(
             { name: 'User', value: `<@${msg.author.id}>`, inline: true },
-            { name: 'Channel', value: `<#${msg.channelId}>`, inline: true },
-            ...chunkedFields('Object', msg, ['author'])
-          ),
+            { name: 'Channel', value: `<#${msg.channelId}>`, inline: true }
+          )
+          .addChunkedFields({
+            name: 'Object',
+            value: msg,
+            ignore: ['author'],
+          })
+          .setUNIXTimestamp(),
       ],
     })
   }
@@ -121,23 +150,24 @@ class Logging extends AliceaExt {
 
     await channel.send({
       embeds: [
-        new EmbedBuilder()
+        new AliceaEmbed()
           .setTitle('Member Joined')
           .setColor(COLORS.GREEN)
-          .setAuthor({
-            name: `${member.user.tag} (${member.user.id})`,
-            iconURL: member.user.displayAvatarURL(),
-          })
+          .setDetailedAuthor(member)
           .addFields(
             { name: 'User', value: `<@${member.user.id}>`, inline: true },
             {
               name: 'Created At',
               value: `<t:${toTimestamp(member.user.createdAt)}:R>`,
               inline: true,
-            },
-            ...chunkedFields('Object', member, ['guild'])
+            }
           )
-          .setTimestamp(),
+          .addChunkedFields({
+            name: 'Object',
+            value: member,
+            ignore: ['guild'],
+          })
+          .setUNIXTimestamp(),
       ],
     })
   }
@@ -162,13 +192,10 @@ class Logging extends AliceaExt {
 
     await channel.send({
       embeds: [
-        new EmbedBuilder()
+        new AliceaEmbed()
           .setTitle('Member Left')
           .setColor(COLORS.RED)
-          .setAuthor({
-            name: `${member.user.tag} (${member.user.id})`,
-            iconURL: member.user.displayAvatarURL(),
-          })
+          .setDetailedAuthor(member)
           .addFields(
             {
               name: 'User',
@@ -181,10 +208,14 @@ class Logging extends AliceaExt {
                 ? `<t:${toTimestamp(member.joinedAt)}:R>`
                 : 'N/A',
               inline: true,
-            },
-            ...chunkedFields('Object', member, ['guild'])
+            }
           )
-          .setTimestamp(),
+          .addChunkedFields({
+            name: 'Object',
+            value: member,
+            ignore: ['guild'],
+          })
+          .setUNIXTimestamp(),
       ],
     })
   }
@@ -207,12 +238,9 @@ class Logging extends AliceaExt {
       data.channel
     ) as TextBasedChannel
 
-    const embed = new EmbedBuilder()
-      .setAuthor({
-        name: `${newState.member.user.tag} (${newState.member.user.id})`,
-        iconURL: newState.member.user.displayAvatarURL(),
-      })
-      .setTimestamp()
+    const embed = new AliceaEmbed()
+      .setDetailedAuthor(newState.member)
+      .setUNIXTimestamp()
       .addFields({
         name: 'User',
         value: `<@${newState.member.user.id}>`,
@@ -225,28 +253,20 @@ class Logging extends AliceaExt {
       embed
         .setTitle('Left Voice Channel')
         .setColor(COLORS.RED)
-        .addFields(
-          {
-            name: 'Channel',
-            value: `<#${oldState.channelId}>`,
-            inline: true,
-          },
-          ...chunkedFields('Old', stateDiff.original),
-          ...chunkedFields('New', stateDiff.updated)
-        )
+        .addFields({
+          name: 'Channel',
+          value: `<#${oldState.channelId}>`,
+          inline: true,
+        })
     } else if (newState.channelId && !oldState.channelId) {
       embed
         .setTitle('Joined Voice Channel')
         .setColor(COLORS.GREEN)
-        .addFields(
-          {
-            name: 'Channel',
-            value: `<#${newState.channelId}>`,
-            inline: true,
-          },
-          ...chunkedFields('Old', stateDiff.original),
-          ...chunkedFields('New', stateDiff.updated)
-        )
+        .addFields({
+          name: 'Channel',
+          value: `<#${newState.channelId}>`,
+          inline: true,
+        })
     } else if (
       oldState.channelId &&
       newState.channelId &&
@@ -265,22 +285,23 @@ class Logging extends AliceaExt {
             name: 'New Channel',
             value: `<#${newState.channelId}>`,
             inline: true,
-          },
-          ...chunkedFields('Old', stateDiff.original),
-          ...chunkedFields('New', stateDiff.updated)
+          }
         )
-    } else {
-      embed
-        .setTitle('Voice State Updated')
-        .setColor(COLORS.YELLOW)
-        .addFields(
-          ...chunkedFields('Old', stateDiff.original),
-          ...chunkedFields('New', stateDiff.updated)
-        )
-    }
+    } else embed.setTitle('Voice State Updated').setColor(COLORS.YELLOW)
 
     await channel.send({
-      embeds: [embed],
+      embeds: [
+        embed.addChunkedFields(
+          {
+            name: 'Old',
+            value: stateDiff.original,
+          },
+          {
+            name: 'New',
+            value: stateDiff.updated,
+          }
+        ),
+      ],
     })
   }
 }
