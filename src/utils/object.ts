@@ -26,13 +26,11 @@ export const diff = (
   return diff
 }
 
-export const toString = (obj: object, ignore?: string[]): string => {
+export const toString = <T>(obj: T, ignore?: (keyof T)[]): string => {
   const copied = structuredClone(obj)
 
   if (ignore) {
-    ignore.forEach((key) => {
-      delete copied[key as keyof typeof copied]
-    })
+    ignore.forEach((key) => delete copied[key])
   }
 
   return inspect(copied, {

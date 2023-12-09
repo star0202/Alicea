@@ -77,7 +77,6 @@ class Logging extends AliceaExt {
             {
               name: 'Updated',
               value: msgDiff.updated,
-              ignore: ['author'],
             }
           )
           .setUNIXTimestamp(),

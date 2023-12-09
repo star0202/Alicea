@@ -34,12 +34,12 @@ const chunk = (content: string, limit = 1024 - 10) => {
 }
 
 export default class AliceaEmbed extends EmbedBuilder {
-  addChunkedFields(
+  addChunkedFields<T>(
     ...fields: RestOrArray<
       Omit<APIEmbedField, 'value'> & {
-        value: string | object
+        value: string | T
         lang?: string
-        ignore?: string[]
+        ignore?: (keyof T)[]
       }
     >
   ) {
