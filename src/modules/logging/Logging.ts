@@ -20,6 +20,8 @@ const isIgnored = async (
   user?: User,
   channel?: Channel
 ) => {
+  if (user?.bot) return true
+
   const ignoredChannels = await db.ignoredChannel.findMany({
     where: {
       guild: data.id,
@@ -31,7 +33,6 @@ const isIgnored = async (
     },
   })
 
-  if (user?.bot) return true
   if (ignoredChannels.some((c) => c.id === channel?.id)) return true
   if (ignoredUsers.some((u) => u.id === user?.id)) return true
 
