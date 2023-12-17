@@ -52,3 +52,10 @@ model Censor {
     regex  String
     reason String
 }
+
+model Raid {
+    id String @id @unique
+
+    role  String
+    regex String
+}
