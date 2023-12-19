@@ -37,10 +37,6 @@ const cleanChannel = async (db: PrismaClient, chn?: GuildBasedChannel) => {
 
   await chn.delete()
 
-  await newChannel.send({
-    content: '🗑️ *Cleaned!*',
-  })
-
   return newChannel
 }
 
