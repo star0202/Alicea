@@ -27,9 +27,10 @@ class Raid extends AliceaExt {
 
     if (!data) return
 
-    const regex = new RegExp(data.regex, 'g')
+    const now = new Date()
+    const diff = now.getTime() - member.user.createdAt.getTime()
 
-    if (!regex.test(member.user.globalName || member.user.username)) return
+    if (diff > data.months * 30 * 24 * 60 * 60 * 1000) return
 
     await member.roles.add(data.role)
 
@@ -59,9 +60,17 @@ class Raid extends AliceaExt {
               inline: true,
             },
             {
-              name: 'Regex',
-              value: `\`/${data.regex}/g\``,
+              name: 'Configured Months',
+              value: `${data.months}`,
               inline: true,
+            },
+            {
+              name: 'User Created At',
+              value: member.user.createdAt.toUTCString(),
+            },
+            {
+              name: 'Server Time',
+              value: now.toUTCString(),
             }
           ),
       ],
@@ -73,12 +82,12 @@ class Raid extends AliceaExt {
   async enable(
     i: ChatInputCommandInteraction,
     @option({
-      type: ApplicationCommandOptionType.String,
-      name: 'regex',
-      description: 'Regex',
+      type: ApplicationCommandOptionType.Integer,
+      name: 'months',
+      description: 'Months',
       required: true,
     })
-    regex: string
+    months: number
   ) {
     if (!i.guild) return
 
@@ -121,7 +130,7 @@ class Raid extends AliceaExt {
             data: {
               id: i.guild!.id,
               role,
-              regex,
+              months,
             },
           })
         } else {
@@ -131,7 +140,7 @@ class Raid extends AliceaExt {
             },
             data: {
               role,
-              regex,
+              months,
             },
           })
         }
@@ -198,7 +207,7 @@ class Raid extends AliceaExt {
     }
 
     await i.editReply({
-      content: `Enabled\nRole: <@&${data.role}>\nRegex: \`/${data.regex}/g\``,
+      content: `Enabled\nRole: <@&${data.role}>\nMonths: ${data.months}`,
     })
   }
 }
