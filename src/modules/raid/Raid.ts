@@ -2,6 +2,7 @@ import { COLORS } from '../../constants'
 import { raid } from '../../groups'
 import AliceaEmbed from '../../structures/Embed'
 import AliceaExt from '../../structures/Extension'
+import { toTimestamp } from '../../utils/timestamp'
 import { listener, option, ownerOnly } from '@pikokr/command.ts'
 import type {
   GuildMember,
@@ -66,11 +67,11 @@ class Raid extends AliceaExt {
             },
             {
               name: 'User Created At',
-              value: member.user.createdAt.toUTCString(),
+              value: `<t:${toTimestamp(member.user.createdAt)}:F>`,
             },
             {
               name: 'Server Time',
-              value: now.toUTCString(),
+              value: `<t:${toTimestamp(now)}:F>`,
             }
           ),
       ],
