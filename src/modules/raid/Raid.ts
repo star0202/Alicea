@@ -79,6 +79,44 @@ class Raid extends AliceaExt {
   }
 
   @ownerOnly
+  @raid.command({
+    name: 'lock',
+    description: '[OWNER] Lock everyone temporarily',
+  })
+  async lock(i: ChatInputCommandInteraction) {
+    if (!i.guild) return
+
+    await i.deferReply({
+      ephemeral: true,
+    })
+
+    const data = await this.db.raid.findUnique({
+      where: {
+        id: i.guild.id,
+      },
+    })
+
+    if (!data) {
+      await i.editReply('Raid shield is not enabled')
+
+      return
+    }
+
+    const members = await i.guild.members.fetch()
+    const me = i.guild.members.cache.get(i.client.user.id)
+    await Promise.all(
+      members
+        .filter(
+          (m) =>
+            !m.user.bot && m.roles.highest.position < me!.roles.highest.position
+        )
+        .map((m) => m.roles.add(data.role))
+    )
+
+    await i.editReply('Done')
+  }
+
+  @ownerOnly
   @raid.command({ name: 'enable', description: '[OWNER] Enable raid shield' })
   async enable(
     i: ChatInputCommandInteraction,
