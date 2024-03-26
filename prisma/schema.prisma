@@ -46,17 +46,10 @@ model Role {
     id String @id @unique
 }
 
-model Censor {
-    id String @id
-
-    regex  String
-    reason String
-}
-
 model Raid {
     id String @id @unique
 
     months Int
-    
+
     role String
 }
