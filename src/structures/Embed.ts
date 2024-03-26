@@ -1,6 +1,6 @@
 import { Colors } from '../constants'
 import { toString } from '../utils/object'
-import { toTimestamp } from '../utils/timestamp'
+import { toTimestamp } from '../utils/time'
 import {
   EmbedBuilder,
   GuildMember,
