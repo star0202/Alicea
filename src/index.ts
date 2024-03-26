@@ -1,5 +1,6 @@
 import { config } from './config'
 import Alicea from './structures/Client'
+import { GatewayIntentBits } from 'discord.js'
 import { Logger } from 'tslog'
 
 const logger = new Logger({
@@ -10,7 +11,16 @@ const logger = new Logger({
   minLevel: config.debug ? 2 : 3,
 })
 
-const client = new Alicea(logger)
+const client = new Alicea({
+  logger,
+  intents: [
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildVoiceStates,
+  ],
+})
 
 client.start()
 
