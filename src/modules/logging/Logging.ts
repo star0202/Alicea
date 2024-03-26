@@ -124,7 +124,6 @@ class Logging extends AliceaExt {
           .addChunkedFields({
             name: 'Object',
             value: msg,
-            ignore: ['author'],
           })
           .setUNIXTimestamp(),
       ],
@@ -165,7 +164,7 @@ class Logging extends AliceaExt {
           .addChunkedFields({
             name: 'Object',
             value: member,
-            ignore: ['guild'],
+            ignored: ['guild'],
           })
           .setUNIXTimestamp(),
       ],
@@ -213,7 +212,7 @@ class Logging extends AliceaExt {
           .addChunkedFields({
             name: 'Object',
             value: member,
-            ignore: ['guild'],
+            ignored: ['guild'],
           })
           .setUNIXTimestamp(),
       ],
@@ -287,7 +286,7 @@ class Logging extends AliceaExt {
             inline: true,
           }
         )
-    } else embed.setTitle('Voice State Updated').setColor(Colors.Blue)
+    } else embed.setTitle('Voice State Updated').setColor(Colors.Yellow)
 
     await channel.send({
       embeds: [
