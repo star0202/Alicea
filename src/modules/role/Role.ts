@@ -1,6 +1,6 @@
 import { role } from '../../groups'
 import AliceaExt from '../../structures/Extension'
-import Confirm from '../../structures/components/Confirm'
+import Confirm from '../../components/Confirm'
 import { listener, ownerOnly } from '@pikokr/command.ts'
 import {
   ActionRowBuilder,

@@ -25,11 +25,6 @@ export const role = new SubCommandGroup({
   description: 'Role',
 })
 
-export const censor = new SubCommandGroup({
-  name: 'censor',
-  description: 'Censor',
-})
-
 export const raid = new SubCommandGroup({
   name: 'raid',
   description: 'Raid',
