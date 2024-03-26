@@ -1,4 +1,4 @@
-import { COLORS } from '../../constants'
+import { Colors } from '../../constants'
 import { raid } from '../../groups'
 import AliceaEmbed from '../../structures/Embed'
 import AliceaExt from '../../structures/Extension'
@@ -53,7 +53,7 @@ class Raid extends AliceaExt {
           .setTitle('Raid Shield Activated')
           .setDetailedAuthor(member)
           .setUNIXTimestamp()
-          .setColor(COLORS.RED)
+          .setColor(Colors.DarkRed)
           .addFields(
             {
               name: 'User',
