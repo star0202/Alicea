@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { inspect } from 'util'
 
-export const diff = <T extends {}, F extends {}>(
+export const diff = <T extends object, F extends object>(
   after: T,
   before: F
 ): { original: Partial<F>; updated: Partial<T> } => {
