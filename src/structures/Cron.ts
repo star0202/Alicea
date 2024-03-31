@@ -8,4 +8,8 @@ export default class CronManager {
       new CronJob({ ...config, timeZone: 'Asia/Seoul', start: true })
     )
   }
+
+  stop() {
+    this.jobs.forEach((job) => job.stop())
+  }
 }

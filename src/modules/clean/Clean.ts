@@ -1,7 +1,7 @@
 import { clean } from '../../groups'
 import CronManager from '../../structures/Cron'
 import AliceaExt from '../../structures/Extension'
-import { option, ownerOnly } from '@pikokr/command.ts'
+import { moduleHook, option, ownerOnly } from '@pikokr/command.ts'
 import { PrismaClient } from '@prisma/client'
 import {
   ApplicationCommandOptionType,
@@ -195,6 +195,11 @@ class Clean extends AliceaExt {
 
       return
     }
+  }
+
+  @moduleHook('unload')
+  async unload() {
+    this.cron.stop
   }
 }
 
