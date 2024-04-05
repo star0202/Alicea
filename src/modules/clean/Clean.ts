@@ -8,9 +8,9 @@ import {
   ChannelType,
   ChatInputCommandInteraction,
 } from 'discord.js'
-import type { GuildBasedChannel } from 'discord.js'
+import type { Channel } from 'discord.js'
 
-const cleanChannel = async (db: PrismaClient, chn?: GuildBasedChannel) => {
+const cleanChannel = async (db: PrismaClient, chn: Channel | null) => {
   if (!chn) return
 
   if (!(chn.type === ChannelType.GuildText)) return
@@ -51,15 +51,11 @@ class Clean extends AliceaExt {
       cronTime: '0 6 * * *',
       onTick: async () => {
         const jobs = await this.db.cleanChannel.findMany()
-
-        Promise.all(
-          jobs
-            .flatMap(
-              (job) =>
-                this.client.channels.cache.get(job.id) as GuildBasedChannel
-            )
-            .map((c) => cleanChannel(this.db, c))
+        const channels = await Promise.all(
+          jobs.map((c) => this.client.channels.fetch(c.id))
         )
+
+        Promise.all(channels.map((c) => cleanChannel(this.db, c)))
       },
     })
   }
