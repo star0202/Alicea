@@ -73,7 +73,9 @@ export default class AliceaEmbed extends EmbedBuilder {
   ) {
     normalizeArray(fields).forEach((field) => {
       const { name, value, ignored, inline, nameF, valueF } = field
-      let chunked = chunk(typeof value === 'string' ? value : toString(value, ignored))
+      let chunked = chunk(
+        typeof value === 'string' ? value : toString(value, ignored)
+      )
       const originalLength = chunked.length
       const _nameF =
         nameF ??
