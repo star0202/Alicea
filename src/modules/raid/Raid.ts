@@ -1,8 +1,8 @@
-import { COLORS } from '../../constants'
+import { Colors } from '../../constants'
 import { raid } from '../../groups'
 import AliceaEmbed from '../../structures/Embed'
 import AliceaExt from '../../structures/Extension'
-import { toTimestamp } from '../../utils/timestamp'
+import { toTimestamp } from '../../utils/time'
 import { listener, option, ownerOnly } from '@pikokr/command.ts'
 import type {
   GuildMember,
@@ -53,7 +53,7 @@ class Raid extends AliceaExt {
           .setTitle('Raid Shield Activated')
           .setDetailedAuthor(member)
           .setUNIXTimestamp()
-          .setColor(COLORS.RED)
+          .setColor(Colors.DarkRed)
           .addFields(
             {
               name: 'User',

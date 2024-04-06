@@ -1,9 +1,9 @@
-import { COLORS } from '../../constants'
+import { Colors } from '../../constants'
 import type Database from '../../structures/Database'
 import AliceaEmbed from '../../structures/Embed'
 import AliceaExt from '../../structures/Extension'
 import { diff } from '../../utils/object'
-import { toTimestamp } from '../../utils/timestamp'
+import { toTimestamp } from '../../utils/time'
 import { listener } from '@pikokr/command.ts'
 import type {
   GuildMember,
@@ -64,7 +64,7 @@ class Logging extends AliceaExt {
       embeds: [
         new AliceaEmbed()
           .setTitle('Message Updated')
-          .setColor(COLORS.YELLOW)
+          .setColor(Colors.Yellow)
           .setDetailedAuthor(before.author)
           .addFields(
             { name: 'User', value: `<@${after.author.id}>`, inline: true },
@@ -115,7 +115,7 @@ class Logging extends AliceaExt {
       embeds: [
         new AliceaEmbed()
           .setTitle('Message Deleted')
-          .setColor(COLORS.RED)
+          .setColor(Colors.Red)
           .setDetailedAuthor(msg.author)
           .addFields(
             { name: 'User', value: `<@${msg.author.id}>`, inline: true },
@@ -124,7 +124,6 @@ class Logging extends AliceaExt {
           .addChunkedFields({
             name: 'Object',
             value: msg,
-            ignore: ['author'],
           })
           .setUNIXTimestamp(),
       ],
@@ -152,7 +151,7 @@ class Logging extends AliceaExt {
       embeds: [
         new AliceaEmbed()
           .setTitle('Member Joined')
-          .setColor(COLORS.GREEN)
+          .setColor(Colors.Green)
           .setDetailedAuthor(member)
           .addFields(
             { name: 'User', value: `<@${member.user.id}>`, inline: true },
@@ -165,7 +164,7 @@ class Logging extends AliceaExt {
           .addChunkedFields({
             name: 'Object',
             value: member,
-            ignore: ['guild'],
+            ignored: ['guild'],
           })
           .setUNIXTimestamp(),
       ],
@@ -194,7 +193,7 @@ class Logging extends AliceaExt {
       embeds: [
         new AliceaEmbed()
           .setTitle('Member Left')
-          .setColor(COLORS.RED)
+          .setColor(Colors.Red)
           .setDetailedAuthor(member)
           .addFields(
             {
@@ -213,7 +212,7 @@ class Logging extends AliceaExt {
           .addChunkedFields({
             name: 'Object',
             value: member,
-            ignore: ['guild'],
+            ignored: ['guild'],
           })
           .setUNIXTimestamp(),
       ],
@@ -252,7 +251,7 @@ class Logging extends AliceaExt {
     if (oldState.channelId && !newState.channelId) {
       embed
         .setTitle('Left Voice Channel')
-        .setColor(COLORS.RED)
+        .setColor(Colors.Red)
         .addFields({
           name: 'Channel',
           value: `<#${oldState.channelId}>`,
@@ -261,7 +260,7 @@ class Logging extends AliceaExt {
     } else if (newState.channelId && !oldState.channelId) {
       embed
         .setTitle('Joined Voice Channel')
-        .setColor(COLORS.GREEN)
+        .setColor(Colors.Green)
         .addFields({
           name: 'Channel',
           value: `<#${newState.channelId}>`,
@@ -274,7 +273,7 @@ class Logging extends AliceaExt {
     ) {
       embed
         .setTitle('Moved Voice Channel')
-        .setColor(COLORS.YELLOW)
+        .setColor(Colors.Yellow)
         .addFields(
           {
             name: 'Old Channel',
@@ -287,7 +286,7 @@ class Logging extends AliceaExt {
             inline: true,
           }
         )
-    } else embed.setTitle('Voice State Updated').setColor(COLORS.YELLOW)
+    } else embed.setTitle('Voice State Updated').setColor(Colors.Yellow)
 
     await channel.send({
       embeds: [
