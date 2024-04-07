@@ -1,5 +1,5 @@
-import { config } from '../config'
-import { VERSION } from '../constants'
+import { config } from '#config'
+import { VERSION } from '#constants'
 import Database from './Database'
 import { CommandClient } from '@pikokr/command.ts'
 import { green } from 'chalk'

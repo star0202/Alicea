@@ -1,5 +1,5 @@
-import { logging } from '../../groups'
-import AliceaExt from '../../structures/Extension'
+import { logging } from '#groups'
+import AliceaExt from '#structures/Extension'
 import { option, ownerOnly } from '@pikokr/command.ts'
 import {
   ApplicationCommandOptionType,

@@ -1,6 +1,6 @@
-import Confirm from '../../components/Confirm'
-import { welcome } from '../../groups'
-import AliceaExt from '../../structures/Extension'
+import Confirm from '#components/Confirm'
+import { welcome } from '#groups'
+import AliceaExt from '#structures/Extension'
 import { listener, ownerOnly } from '@pikokr/command.ts'
 import type { GuildMember } from 'discord.js'
 import {

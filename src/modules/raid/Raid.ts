@@ -1,8 +1,8 @@
-import { Colors } from '../../constants'
-import { raid } from '../../groups'
-import AliceaEmbed from '../../structures/Embed'
-import AliceaExt from '../../structures/Extension'
-import { toTimestamp } from '../../utils/time'
+import { Colors } from '#constants'
+import { raid } from '#groups'
+import AliceaEmbed from '#structures/Embed'
+import AliceaExt from '#structures/Extension'
+import { toTimestamp } from '#utils/time'
 import { listener, option, ownerOnly } from '@pikokr/command.ts'
 import type {
   GuildMember,

@@ -1,5 +1,5 @@
-import { Colors } from '../constants'
-import AliceaEmbed from '../structures/Embed'
+import { Colors } from '#constants'
+import AliceaEmbed from '#structures/Embed'
 
 export class Permission {
   static notOwner = () =>

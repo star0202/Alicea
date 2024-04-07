@@ -1,5 +1,5 @@
-import { Emojis } from '../constants'
-import AliceaEmbed from '../structures/Embed'
+import { Emojis } from '#constants'
+import AliceaEmbed from '#structures/Embed'
 import { basename } from 'path'
 
 export class Eval {

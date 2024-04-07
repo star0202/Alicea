@@ -1,9 +1,9 @@
-import { Colors } from '../../constants'
-import type Database from '../../structures/Database'
-import AliceaEmbed from '../../structures/Embed'
-import AliceaExt from '../../structures/Extension'
-import { diff } from '../../utils/object'
-import { toTimestamp } from '../../utils/time'
+import { Colors } from '#constants'
+import type Database from '#structures/Database'
+import AliceaEmbed from '#structures/Embed'
+import AliceaExt from '#structures/Extension'
+import { diff } from '#utils/object'
+import { toTimestamp } from '#utils/time'
 import { listener } from '@pikokr/command.ts'
 import type {
   GuildMember,

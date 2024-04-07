@@ -1,6 +1,6 @@
-import { clean } from '../../groups'
-import CronManager from '../../structures/Cron'
-import AliceaExt from '../../structures/Extension'
+import { clean } from '#groups'
+import CronManager from '#structures/Cron'
+import AliceaExt from '#structures/Extension'
 import { option, ownerOnly } from '@pikokr/command.ts'
 import { PrismaClient } from '@prisma/client'
 import {

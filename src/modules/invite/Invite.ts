@@ -1,5 +1,5 @@
-import { invite } from '../../groups'
-import AliceaExt from '../../structures/Extension'
+import { invite } from '#groups'
+import AliceaExt from '#structures/Extension'
 import { ownerOnly } from '@pikokr/command.ts'
 import { ChannelType, ChatInputCommandInteraction } from 'discord.js'
 
