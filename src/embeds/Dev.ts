@@ -28,23 +28,29 @@ export class Eval {
       })
 }
 
-export class Reload {
-  static result = (
-    modules: {
-      file: string
-      result: boolean
-      error?: Error | undefined
-      extensions?: object[] | undefined
-    }[]
-  ) => {
-    const success = modules.filter((x) => x.result),
-      fail = modules.filter((x) => !x.result)
+type ReloadResult = {
+  file: string
+  result: boolean
+  error?: Error | undefined
+  extensions?: object[] | undefined
+}
 
-    const { Success, Fail } = Emojis
+export class Reload {
+  static result = (res: ReloadResult[]) => {
+    const { success, fail } = res.reduce(
+      (acc, x) => {
+        if (x.result) acc.success.push(x)
+        else acc.fail.push(x)
+        return acc
+      },
+      { success: [] as ReloadResult[], fail: [] as ReloadResult[] }
+    )
 
     return new AliceaEmbed()
       .setTitle('Every module reloaded')
-      .setDescription(`${Success} ${success.length} ${Fail} ${fail.length}`)
+      .setDescription(
+        `${Emojis.Success} ${success.length} ${Emojis.Fail} ${fail.length}`
+      )
       .addFields(
         {
           name: 'Success',
