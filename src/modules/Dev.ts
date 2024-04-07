@@ -29,12 +29,7 @@ const commandLog = (data: CommandInteractionOption, indents = 0) =>
 class Dev extends AliceaExt {
   @listener({ event: 'applicationCommandInvokeError', emitter: 'cts' })
   async errorLogger(err: Error) {
-    try {
-      this.logger.error(err)
-    } catch (e) {
-      console.error(err)
-      console.error(e)
-    }
+    this.logger.error(err.stack)
   }
 
   @listener({ event: 'interactionCreate' })
