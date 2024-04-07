@@ -199,7 +199,7 @@ class Clean extends AliceaExt {
 
   @moduleHook('unload')
   async unload() {
-    this.cron.stop
+    this.cron.stop()
   }
 }
 
