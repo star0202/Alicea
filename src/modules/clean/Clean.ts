@@ -17,8 +17,9 @@ const cleanChannel = async (db: PrismaClient, chn: Channel | null) => {
 
   const newChannel = await chn.clone()
 
+  const now = new Date(Date.now() + 9 * 60 * 60 * 1000)
   await newChannel.setName(
-    `${chn.name.split('-')[0]}-${new Date().toISOString().slice(0, 10)}`
+    `${chn.name.split('-')[0]}-${now.toISOString().slice(0, 10)}`
   )
 
   await db.cleanChannel.updateMany({
