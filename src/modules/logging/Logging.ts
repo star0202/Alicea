@@ -5,7 +5,12 @@ import type {
   TextBasedChannel,
   VoiceState,
 } from 'discord.js'
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, codeBlock } from 'discord.js'
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  codeBlock,
+} from 'discord.js'
 import type { Channel, User } from 'discord.js'
 import { Colors } from '../../constants'
 import type Database from '../../structures/Database'
