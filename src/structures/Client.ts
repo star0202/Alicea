@@ -1,8 +1,8 @@
 import { join } from 'node:path'
 import { CommandClient } from '@pikokr/command.ts'
 import { green } from 'chalk'
-import { ActivityType, Client } from 'discord.js'
-import type { GatewayIntentBits } from 'discord.js'
+import { ActivityType, Client, Events } from 'discord.js'
+import type { GatewayIntentBits, Partials } from 'discord.js'
 import { short } from 'git-rev-sync'
 import type { Logger } from 'tslog'
 import { config } from '#config'
@@ -10,28 +10,37 @@ import { VERSION } from '#constants'
 import Database from './Database'
 
 export default class Alicea extends CommandClient {
-  readonly db: Database
+  readonly startedAt = Date.now()
+  readonly db = new Database(this.logger)
 
   constructor(config: {
     logger: Logger<unknown>
     intents: GatewayIntentBits[]
+    partials?: Partials[]
   }) {
-    const { logger, intents } = config
+    const { logger, intents, partials } = config
 
     super(
       new Client({
         intents,
+        partials,
+        presence: {
+          activities: [
+            {
+              name: `${VERSION} (${short() ?? 'N/A'})`,
+              type: ActivityType.Playing,
+            },
+          ],
+        },
       }),
       logger,
     )
 
-    this.discord.once('ready', (client) => this.onReady(client))
+    this.discord.once(Events.ClientReady, (client) =>
+      this.onClientReady(client),
+    )
 
-    this.discord.on('debug', (msg) => {
-      this.logger.debug(msg)
-    })
-
-    this.db = new Database(logger)
+    this.discord.on(Events.Debug, (msg) => this.logger.debug(msg))
   }
 
   async setup() {
@@ -44,16 +53,7 @@ export default class Alicea extends CommandClient {
     )
   }
 
-  async onReady(client: Client<true>) {
-    client.user.setPresence({
-      activities: [
-        {
-          name: `${VERSION} (${short() ?? 'N/A'})`,
-          type: ActivityType.Playing,
-        },
-      ],
-    })
-
+  async onClientReady(client: Client<true>) {
     this.logger.info(`Logged in as: ${green(client.user.tag)}`)
 
     await this.fetchOwners()

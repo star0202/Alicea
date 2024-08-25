@@ -1,4 +1,3 @@
-import { Colors } from '#constants'
 import AliceaEmbed from '#structures/Embed'
 
 export const Permission = {
@@ -6,5 +5,5 @@ export const Permission = {
     new AliceaEmbed()
       .setTitle('Permission Denied')
       .setDescription('You are not the owner of this bot.')
-      .setColor(Colors.DarkRed),
+      .setColor('DarkRed'),
 }

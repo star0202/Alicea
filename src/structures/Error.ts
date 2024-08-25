@@ -1,4 +1,4 @@
-export default class AliceError extends Error {
+export default class AliceaError extends Error {
   constructor(message: string) {
     super()
 

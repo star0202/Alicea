@@ -1,4 +1,4 @@
-import { GatewayIntentBits } from 'discord.js'
+import { GatewayIntentBits, Partials } from 'discord.js'
 import { Logger } from 'tslog'
 import { config } from './config'
 import Alicea from './structures/Client'
@@ -20,6 +20,7 @@ const client = new Alicea({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildVoiceStates,
   ],
+  partials: [Partials.Channel],
 })
 
 client.start()

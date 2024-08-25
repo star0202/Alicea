@@ -103,13 +103,12 @@ class Raid extends AliceaExt {
     }
 
     const members = await i.guild.members.fetch()
-    const me = i.guild.members.cache.get(i.client.user.id)
+    const me = i.guild.members.cache.get(i.client.user.id)!
     await Promise.all(
       members
         .filter(
           (m) =>
-            !m.user.bot &&
-            m.roles.highest.position < me!.roles.highest.position,
+            !m.user.bot && m.roles.highest.position < me.roles.highest.position,
         )
         .map((m) => m.roles.add(data.role)),
     )
