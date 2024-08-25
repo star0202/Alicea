@@ -7,7 +7,7 @@ import type {
 import {
   ActionRowBuilder,
   ApplicationCommandOptionType,
-  type ChatInputCommandInteraction,
+  ChatInputCommandInteraction,
   ComponentType,
   RoleSelectMenuBuilder,
 } from 'discord.js'

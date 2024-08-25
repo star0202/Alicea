@@ -1,7 +1,7 @@
 import { option, ownerOnly } from '@pikokr/command.ts'
 import {
   ApplicationCommandOptionType,
-  type ChatInputCommandInteraction,
+  ChatInputCommandInteraction,
 } from 'discord.js'
 import { logging } from '#groups'
 import AliceaExt from '#structures/Extension'
@@ -101,7 +101,7 @@ class Setting extends AliceaExt {
     })
 
     if (!data) {
-      await i.editReply(`❌ Log channel not set`)
+      await i.editReply('❌ Log channel not set')
       return
     }
 
@@ -184,7 +184,7 @@ class Setting extends AliceaExt {
     })
 
     if (!data) {
-      await i.editReply(`❌ Log channel not set`)
+      await i.editReply('❌ Log channel not set')
       return
     }
 

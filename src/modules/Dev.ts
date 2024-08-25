@@ -4,7 +4,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  type ChatInputCommandInteraction,
+  ChatInputCommandInteraction,
 } from 'discord.js'
 import type {
   CommandInteractionOption,
@@ -17,7 +17,7 @@ import { Emojis } from '#constants'
 import { Eval, Reload, Sync } from '#embeds/Dev'
 import AliceaError from '#structures/Error'
 import AliceaExt from '#structures/Extension'
-import { toString } from '#utils/object'
+import { inspect } from '#utils/object'
 
 const commandLog = (data: CommandInteractionOption, indents = 0) =>
   `\n${' '.repeat(indents * 2)}- ${green(data.name)}: ${blue(
@@ -39,8 +39,9 @@ class Dev extends AliceaExt {
     const options = i.options.data.map((data) =>
       data.type !== ApplicationCommandOptionType.Subcommand
         ? commandLog(data)
-        : `\n- ${green(data.name)}: (${yellow('Subcommand')})` +
-          data.options?.map((x) => commandLog(x, 1)),
+        : `\n- ${green(data.name)}: (${yellow('Subcommand')})${data.options?.map(
+            (x) => commandLog(x, 1),
+          )}`,
     )
 
     const guild = i.guild
@@ -105,14 +106,14 @@ class Dev extends AliceaExt {
       .replace(/```(js|ts)?/g, '')
       .trim()
 
-    let res
+    let res: unknown
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { cts, client } = {
         cts: this.commandClient,
         client: this.client,
       }
 
+      // biome-ignore lint/security/noGlobalEval: eval is used for debugging
       res = await eval(code)
     } catch (e) {
       await msg.react(Emojis.Fail)
@@ -128,7 +129,7 @@ class Dev extends AliceaExt {
     }
 
     await msg.react(Emojis.Success)
-    const output = typeof res === 'string' ? res : toString(res)
+    const output = typeof res === 'string' ? res : inspect(res)
     msg.reply({
       embeds: [Eval.success(code, output)],
       allowedMentions: { repliedUser: false },

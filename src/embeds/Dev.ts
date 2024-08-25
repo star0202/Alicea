@@ -1,31 +1,31 @@
-import { basename } from 'path'
+import { basename } from 'node:path'
 import { Emojis } from '#constants'
 import AliceaEmbed from '#structures/Embed'
 
-export class Eval {
-  private static default = (code: string) =>
+export const Eval = {
+  default: (code: string) =>
     new AliceaEmbed().addChunkedFields({
       name: 'Input',
       value: code,
-    })
+    }),
 
-  static success = (code: string, output: string) =>
-    this.default(code)
+  success: (code: string, output: string) =>
+    Eval.default(code)
       .setTitle('Successfully executed')
       .setColor('Green')
       .addChunkedFields({
         name: 'Output',
         value: output,
-      })
+      }),
 
-  static error = (code: string, e: Error) =>
-    this.default(code)
+  error: (code: string, e: Error) =>
+    Eval.default(code)
       .setTitle('Error occurred')
       .setColor('Red')
       .addChunkedFields({
         name: 'Stack trace',
         value: e.stack ?? 'N/A',
-      })
+      }),
 }
 
 type ReloadResult = {
@@ -35,8 +35,8 @@ type ReloadResult = {
   extensions?: object[] | undefined
 }
 
-export class Reload {
-  static result = (res: ReloadResult[]) => {
+export const Reload = {
+  result: (res: ReloadResult[]) => {
     const { success, fail } = res.reduce(
       (acc, x) => {
         if (x.result) acc.success.push(x)
@@ -61,12 +61,12 @@ export class Reload {
           value: fail.map((x) => basename(x.file)).join('\n') || '*None*',
         },
       )
-  }
+  },
 }
 
-export class Sync {
-  static success = () =>
+export const Sync = {
+  success: () =>
     new AliceaEmbed()
       .setTitle('Commands synced')
-      .setDescription(`${Emojis.Success} Done`)
+      .setDescription(`${Emojis.Success} Done`),
 }

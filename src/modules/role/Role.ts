@@ -3,7 +3,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  type ChatInputCommandInteraction,
+  ChatInputCommandInteraction,
   ComponentType,
   RoleSelectMenuBuilder,
 } from 'discord.js'

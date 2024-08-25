@@ -3,7 +3,7 @@ import type { PrismaClient } from '@prisma/client'
 import {
   ApplicationCommandOptionType,
   ChannelType,
-  type ChatInputCommandInteraction,
+  ChatInputCommandInteraction,
 } from 'discord.js'
 import type { GuildBasedChannel } from 'discord.js'
 import { clean } from '#groups'
@@ -99,7 +99,7 @@ class Clean extends AliceaExt {
     })
 
     if (data) {
-      await i.editReply(`✅ Turned off clean`)
+      await i.editReply('✅ Turned off clean')
 
       await this.db.cleanChannel.delete({
         where: {
@@ -142,7 +142,7 @@ class Clean extends AliceaExt {
     })
 
     if (!data) {
-      await i.editReply(`❌ No channel to clean`)
+      await i.editReply('❌ No channel to clean')
 
       return
     }
@@ -177,13 +177,13 @@ class Clean extends AliceaExt {
     })
 
     if (!data) {
-      await i.editReply(`❌ Channel is not allowed to clean`)
+      await i.editReply('❌ Channel is not allowed to clean')
 
       return
     }
 
     if (!data.cleanAllowed) {
-      await i.editReply(`❌ Clean is not allowed`)
+      await i.editReply('❌ Clean is not allowed')
 
       return
     }
@@ -191,7 +191,7 @@ class Clean extends AliceaExt {
     const chn = await cleanChannel(this.db, i.channel)
 
     if (!chn) {
-      await i.editReply(`❌ Failed to clean channel`)
+      await i.editReply('❌ Failed to clean channel')
 
       return
     }

@@ -1,9 +1,4 @@
-import {
-  EmbedBuilder,
-  GuildMember,
-  codeBlock,
-  normalizeArray,
-} from 'discord.js'
+import { EmbedBuilder, GuildMember, normalizeArray } from 'discord.js'
 import type {
   APIEmbed,
   APIEmbedField,
@@ -11,9 +6,8 @@ import type {
   RestOrArray,
   User,
 } from 'discord.js'
-import { Colors } from '#constants'
-import { toString } from '#utils/object'
-import { toTimestamp } from '#utils/time'
+import { Colors } from '../constants'
+import { toTimestamp } from '../utils/time'
 
 const chunk = (content: string, limit = 1024 - 10) => {
   const chunked = []
@@ -61,28 +55,24 @@ export default class AliceaEmbed extends EmbedBuilder {
     })
   }
 
-  addChunkedFields<T extends object>(
+  addChunkedFields(
     ...fields: RestOrArray<
-      Omit<APIEmbedField, 'value'> & {
-        value: T | string
-        ignored?: T extends string ? never : (keyof T)[]
+      APIEmbedField & {
         nameF?: (title: string, idx: number, total: number) => string
         valueF?: (value: string) => string
       }
     >
   ) {
-    normalizeArray(fields).forEach((field) => {
-      const { name, value, ignored, inline, nameF, valueF } = field
-      let chunked = chunk(
-        typeof value === 'string' ? value : toString(value, ignored),
-      )
+    for (const field of normalizeArray(fields)) {
+      const { name, value, inline, nameF, valueF } = field
+      let chunked = chunk(value)
       const originalLength = chunked.length
       const _nameF =
         nameF ??
         (chunked.length > 1
           ? (name, idx, total) => `${name} ${idx + 1}/${total}`
           : (name) => name)
-      const _valueF = valueF ?? ((x) => codeBlock('ts', x))
+      const _valueF = valueF ?? ((x) => x)
 
       // TODO: calculate actual size of embed (or use embed paginator)
       if (chunked.length > 5) {
@@ -100,7 +90,7 @@ export default class AliceaEmbed extends EmbedBuilder {
           inline,
         })),
       )
-    })
+    }
 
     return this
   }

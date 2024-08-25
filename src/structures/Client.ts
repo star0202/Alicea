@@ -1,4 +1,4 @@
-import { join } from 'path'
+import { join } from 'node:path'
 import { CommandClient } from '@pikokr/command.ts'
 import { green } from 'chalk'
 import { ActivityType, Client } from 'discord.js'
@@ -35,7 +35,9 @@ export default class Alicea extends CommandClient {
   }
 
   async setup() {
-    await this.enableApplicationCommandsExtension({ guilds: config.guilds })
+    await this.enableApplicationCommandsExtension({
+      guilds: config.guilds.length > 0 ? config.guilds : undefined,
+    })
 
     await this.registry.loadAllModulesInDirectory(
       join(__dirname, '..', 'modules'),

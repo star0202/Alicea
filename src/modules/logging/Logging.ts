@@ -12,6 +12,7 @@ import type Database from '#structures/Database'
 import AliceaEmbed from '#structures/Embed'
 import AliceaExt from '#structures/Extension'
 import { diff } from '#utils/object'
+import { inspect } from '#utils/object'
 import { toTimestamp } from '#utils/time'
 
 const isIgnored = async (
@@ -73,11 +74,11 @@ class Logging extends AliceaExt {
           .addChunkedFields(
             {
               name: 'Original',
-              value: msgDiff.original,
+              value: inspect(msgDiff.original),
             },
             {
               name: 'Updated',
-              value: msgDiff.updated,
+              value: inspect(msgDiff.updated),
             },
           )
           .setUNIXTimestamp(),
@@ -123,7 +124,7 @@ class Logging extends AliceaExt {
           )
           .addChunkedFields({
             name: 'Object',
-            value: msg,
+            value: inspect(msg),
           })
           .setUNIXTimestamp(),
       ],
@@ -163,8 +164,7 @@ class Logging extends AliceaExt {
           )
           .addChunkedFields({
             name: 'Object',
-            value: member,
-            ignored: ['guild'],
+            value: inspect(member, ['guild']),
           })
           .setUNIXTimestamp(),
       ],
@@ -211,8 +211,7 @@ class Logging extends AliceaExt {
           )
           .addChunkedFields({
             name: 'Object',
-            value: member,
-            ignored: ['guild'],
+            value: inspect(member, ['guild']),
           })
           .setUNIXTimestamp(),
       ],
@@ -293,11 +292,11 @@ class Logging extends AliceaExt {
         embed.addChunkedFields(
           {
             name: 'Old',
-            value: stateDiff.original,
+            value: inspect(stateDiff.original),
           },
           {
             name: 'New',
-            value: stateDiff.updated,
+            value: inspect(stateDiff.updated),
           },
         ),
       ],

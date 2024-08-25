@@ -1,4 +1,4 @@
-import { inspect } from 'util'
+import { inspect as nodeInspect } from 'node:util'
 import _ from 'lodash'
 
 export const diff = <T extends object, F extends object>(
@@ -7,11 +7,11 @@ export const diff = <T extends object, F extends object>(
 ): { original: Partial<F>; updated: Partial<T> } => {
   const diff = { original: {}, updated: {} }
 
-  _.differenceWith(
+  for (const [k, v] of _.differenceWith(
     Object.entries(after),
     Object.entries(before),
     _.isEqual,
-  ).forEach(([k, v]) => {
+  )) {
     Object.defineProperty(diff.original, k, {
       value: before[k as keyof typeof before],
       enumerable: true,
@@ -21,12 +21,12 @@ export const diff = <T extends object, F extends object>(
       value: v,
       enumerable: true,
     })
-  })
+  }
 
   return diff
 }
 
-export const toString = <T>(obj: T, ignore?: (keyof T)[]): string => {
+export const inspect = <T>(obj: T, ignore?: (keyof T)[]): string => {
   let cur = obj
   if (ignore) {
     try {
@@ -35,10 +35,10 @@ export const toString = <T>(obj: T, ignore?: (keyof T)[]): string => {
       console.error(e)
     }
 
-    ignore.forEach((key) => delete cur[key])
+    for (const key of ignore) delete cur[key]
   }
 
-  return inspect(cur, {
+  return nodeInspect(cur, {
     maxArrayLength: 200,
     depth: 2,
   })

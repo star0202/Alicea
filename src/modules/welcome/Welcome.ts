@@ -2,7 +2,7 @@ import { listener, ownerOnly } from '@pikokr/command.ts'
 import type { GuildMember } from 'discord.js'
 import {
   ActionRowBuilder,
-  type ChatInputCommandInteraction,
+  ChatInputCommandInteraction,
   ComponentType,
   RoleSelectMenuBuilder,
 } from 'discord.js'
