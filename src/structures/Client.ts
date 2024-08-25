@@ -1,13 +1,13 @@
-import { config } from '#config'
-import { VERSION } from '#constants'
-import Database from './Database'
+import { join } from 'path'
 import { CommandClient } from '@pikokr/command.ts'
 import { green } from 'chalk'
 import { ActivityType, Client } from 'discord.js'
 import type { GatewayIntentBits } from 'discord.js'
 import { short } from 'git-rev-sync'
-import { join } from 'path'
-import { Logger } from 'tslog'
+import type { Logger } from 'tslog'
+import { config } from '#config'
+import { VERSION } from '#constants'
+import Database from './Database'
 
 export default class Alicea extends CommandClient {
   readonly db: Database
@@ -22,7 +22,7 @@ export default class Alicea extends CommandClient {
       new Client({
         intents,
       }),
-      logger
+      logger,
     )
 
     this.discord.once('ready', (client) => this.onReady(client))
@@ -38,7 +38,7 @@ export default class Alicea extends CommandClient {
     await this.enableApplicationCommandsExtension({ guilds: config.guilds })
 
     await this.registry.loadAllModulesInDirectory(
-      join(__dirname, '..', 'modules')
+      join(__dirname, '..', 'modules'),
     )
   }
 

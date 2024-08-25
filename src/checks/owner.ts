@@ -1,8 +1,8 @@
+import type { CommandClient } from '@pikokr/command.ts'
+import type { ChatInputCommandInteraction, User } from 'discord.js'
 import { Permission } from '#embeds/Error'
 import AliceaError from '#structures/Error'
 import { createCommandCheckDecorator } from '.'
-import type { CommandClient } from '@pikokr/command.ts'
-import type { ChatInputCommandInteraction, User } from 'discord.js'
 
 class OwnerOnlyError extends AliceaError {
   constructor(user: User) {
@@ -22,5 +22,5 @@ export const ownerOnly = createCommandCheckDecorator(
 
       throw new OwnerOnlyError(i.user)
     }
-  }
+  },
 )

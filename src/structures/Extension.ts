@@ -1,5 +1,5 @@
-import type Alicea from './Client'
 import { Extension } from '@pikokr/command.ts'
+import type Alicea from './Client'
 
 export default class AliceaExt extends Extension<Alicea> {
   protected get db() {

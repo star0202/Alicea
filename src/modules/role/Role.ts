@@ -1,16 +1,16 @@
-import Confirm from '#components/Confirm'
-import { role } from '#groups'
-import AliceaExt from '#structures/Extension'
 import { listener, ownerOnly } from '@pikokr/command.ts'
 import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  ChatInputCommandInteraction,
+  type ChatInputCommandInteraction,
   ComponentType,
   RoleSelectMenuBuilder,
 } from 'discord.js'
 import type { MessageComponentInteraction } from 'discord.js'
+import Confirm from '#components/Confirm'
+import { role } from '#groups'
+import AliceaExt from '#structures/Extension'
 
 const buttonStyleCycle = [
   ButtonStyle.Primary,
@@ -39,7 +39,7 @@ class Role extends AliceaExt {
             .setCustomId('role')
             .setPlaceholder('Select roles')
             .setMinValues(1)
-            .setMaxValues(5)
+            .setMaxValues(5),
         ),
         new Confirm(),
       ],
@@ -77,8 +77,8 @@ class Role extends AliceaExt {
                   new ButtonBuilder()
                     .setCustomId(`role${r.id}`)
                     .setLabel(r.name)
-                    .setStyle(buttonStyleCycle[idx % buttonStyleCycle.length])
-                )
+                    .setStyle(buttonStyleCycle[idx % buttonStyleCycle.length]),
+                ),
               ),
             ],
           })

@@ -1,6 +1,3 @@
-import { Colors } from '#constants'
-import { toString } from '#utils/object'
-import { toTimestamp } from '#utils/time'
 import {
   EmbedBuilder,
   GuildMember,
@@ -14,6 +11,9 @@ import type {
   RestOrArray,
   User,
 } from 'discord.js'
+import { Colors } from '#constants'
+import { toString } from '#utils/object'
+import { toTimestamp } from '#utils/time'
 
 const chunk = (content: string, limit = 1024 - 10) => {
   const chunked = []
@@ -74,7 +74,7 @@ export default class AliceaEmbed extends EmbedBuilder {
     normalizeArray(fields).forEach((field) => {
       const { name, value, ignored, inline, nameF, valueF } = field
       let chunked = chunk(
-        typeof value === 'string' ? value : toString(value, ignored)
+        typeof value === 'string' ? value : toString(value, ignored),
       )
       const originalLength = chunked.length
       const _nameF =
@@ -98,7 +98,7 @@ export default class AliceaEmbed extends EmbedBuilder {
           name: _nameF(name, idx, originalLength),
           value: _valueF(v),
           inline,
-        }))
+        })),
       )
     })
 

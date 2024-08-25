@@ -14,7 +14,7 @@ export default class Confirm extends ActionRowBuilder<ButtonBuilder> {
         .setCustomId('cancel')
         .setLabel('Cancel')
         .setEmoji('✖️')
-        .setStyle(ButtonStyle.Danger)
+        .setStyle(ButtonStyle.Danger),
     )
   }
 }

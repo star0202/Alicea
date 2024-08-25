@@ -1,9 +1,3 @@
-import { Colors } from '#constants'
-import type Database from '#structures/Database'
-import AliceaEmbed from '#structures/Embed'
-import AliceaExt from '#structures/Extension'
-import { diff } from '#utils/object'
-import { toTimestamp } from '#utils/time'
 import { listener } from '@pikokr/command.ts'
 import type {
   GuildMember,
@@ -13,12 +7,18 @@ import type {
 } from 'discord.js'
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
 import type { Channel, User } from 'discord.js'
+import { Colors } from '#constants'
+import type Database from '#structures/Database'
+import AliceaEmbed from '#structures/Embed'
+import AliceaExt from '#structures/Extension'
+import { diff } from '#utils/object'
+import { toTimestamp } from '#utils/time'
 
 const isIgnored = async (
   data: { id: string; channel: string },
   db: Database,
   user?: User,
-  channel?: Channel
+  channel?: Channel,
 ) => {
   if (user?.bot) return true
 
@@ -55,7 +55,7 @@ class Logging extends AliceaExt {
     if (await isIgnored(data, this.db, before.author, before.channel)) return
 
     const channel = before.guild.channels.cache.get(
-      data.channel
+      data.channel,
     ) as TextBasedChannel
 
     const msgDiff = diff(after, before)
@@ -68,7 +68,7 @@ class Logging extends AliceaExt {
           .setDetailedAuthor(before.author)
           .addFields(
             { name: 'User', value: `<@${after.author.id}>`, inline: true },
-            { name: 'Channel', value: `<#${after.channelId}>`, inline: true }
+            { name: 'Channel', value: `<#${after.channelId}>`, inline: true },
           )
           .addChunkedFields(
             {
@@ -78,7 +78,7 @@ class Logging extends AliceaExt {
             {
               name: 'Updated',
               value: msgDiff.updated,
-            }
+            },
           )
           .setUNIXTimestamp(),
       ],
@@ -87,7 +87,7 @@ class Logging extends AliceaExt {
           new ButtonBuilder()
             .setStyle(ButtonStyle.Link)
             .setURL(after.url)
-            .setLabel('Go To Message')
+            .setLabel('Go To Message'),
         ),
       ],
     })
@@ -108,7 +108,7 @@ class Logging extends AliceaExt {
     if (await isIgnored(data, this.db, msg.author, msg.channel)) return
 
     const channel = msg.guild.channels.cache.get(
-      data.channel
+      data.channel,
     ) as TextBasedChannel
 
     await channel.send({
@@ -119,7 +119,7 @@ class Logging extends AliceaExt {
           .setDetailedAuthor(msg.author)
           .addFields(
             { name: 'User', value: `<@${msg.author.id}>`, inline: true },
-            { name: 'Channel', value: `<#${msg.channelId}>`, inline: true }
+            { name: 'Channel', value: `<#${msg.channelId}>`, inline: true },
           )
           .addChunkedFields({
             name: 'Object',
@@ -144,7 +144,7 @@ class Logging extends AliceaExt {
     if (await isIgnored(data, this.db, member.user)) return
 
     const channel = member.guild.channels.cache.get(
-      data.channel
+      data.channel,
     ) as TextBasedChannel
 
     await channel.send({
@@ -159,7 +159,7 @@ class Logging extends AliceaExt {
               name: 'Created At',
               value: `<t:${toTimestamp(member.user.createdAt)}:R>`,
               inline: true,
-            }
+            },
           )
           .addChunkedFields({
             name: 'Object',
@@ -186,7 +186,7 @@ class Logging extends AliceaExt {
     if (await isIgnored(data, this.db, member.user)) return
 
     const channel = member.guild.channels.cache.get(
-      data.channel
+      data.channel,
     ) as TextBasedChannel
 
     await channel.send({
@@ -207,7 +207,7 @@ class Logging extends AliceaExt {
                 ? `<t:${toTimestamp(member.joinedAt)}:R>`
                 : 'N/A',
               inline: true,
-            }
+            },
           )
           .addChunkedFields({
             name: 'Object',
@@ -234,7 +234,7 @@ class Logging extends AliceaExt {
     if (await isIgnored(data, this.db, newState.member.user)) return
 
     const channel = newState.guild.channels.cache.get(
-      data.channel
+      data.channel,
     ) as TextBasedChannel
 
     const embed = new AliceaEmbed()
@@ -284,7 +284,7 @@ class Logging extends AliceaExt {
             name: 'New Channel',
             value: `<#${newState.channelId}>`,
             inline: true,
-          }
+          },
         )
     } else embed.setTitle('Voice State Updated').setColor(Colors.Yellow)
 
@@ -298,7 +298,7 @@ class Logging extends AliceaExt {
           {
             name: 'New',
             value: stateDiff.updated,
-          }
+          },
         ),
       ],
     })

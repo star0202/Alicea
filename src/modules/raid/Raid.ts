@@ -1,8 +1,3 @@
-import { Colors } from '#constants'
-import { raid } from '#groups'
-import AliceaEmbed from '#structures/Embed'
-import AliceaExt from '#structures/Extension'
-import { toTimestamp } from '#utils/time'
 import { listener, option, ownerOnly } from '@pikokr/command.ts'
 import type {
   GuildMember,
@@ -12,10 +7,15 @@ import type {
 import {
   ActionRowBuilder,
   ApplicationCommandOptionType,
-  ChatInputCommandInteraction,
+  type ChatInputCommandInteraction,
   ComponentType,
   RoleSelectMenuBuilder,
 } from 'discord.js'
+import { Colors } from '#constants'
+import { raid } from '#groups'
+import AliceaEmbed from '#structures/Embed'
+import AliceaExt from '#structures/Extension'
+import { toTimestamp } from '#utils/time'
 
 class Raid extends AliceaExt {
   @listener({ event: 'guildMemberAdd' })
@@ -44,7 +44,7 @@ class Raid extends AliceaExt {
     if (!channel) return
 
     const logChannel = member.guild.channels.cache.get(
-      channel.channel
+      channel.channel,
     ) as TextBasedChannel
 
     await logChannel.send({
@@ -72,7 +72,7 @@ class Raid extends AliceaExt {
             {
               name: 'Server Time',
               value: `<t:${toTimestamp(now)}:F>`,
-            }
+            },
           ),
       ],
     })
@@ -108,9 +108,10 @@ class Raid extends AliceaExt {
       members
         .filter(
           (m) =>
-            !m.user.bot && m.roles.highest.position < me!.roles.highest.position
+            !m.user.bot &&
+            m.roles.highest.position < me!.roles.highest.position,
         )
-        .map((m) => m.roles.add(data.role))
+        .map((m) => m.roles.add(data.role)),
     )
 
     await i.editReply('Done')
@@ -126,7 +127,7 @@ class Raid extends AliceaExt {
       description: 'Months',
       required: true,
     })
-    months: number
+    months: number,
   ) {
     if (!i.guild) return
 
@@ -140,7 +141,7 @@ class Raid extends AliceaExt {
         new ActionRowBuilder<RoleSelectMenuBuilder>().addComponents(
           new RoleSelectMenuBuilder()
             .setCustomId('role')
-            .setPlaceholder('Select roles')
+            .setPlaceholder('Select roles'),
         ),
       ],
     })

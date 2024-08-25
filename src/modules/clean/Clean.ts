@@ -1,14 +1,14 @@
-import { clean } from '#groups'
-import CronManager from '#structures/Cron'
-import AliceaExt from '#structures/Extension'
 import { option, ownerOnly } from '@pikokr/command.ts'
-import { PrismaClient } from '@prisma/client'
+import type { PrismaClient } from '@prisma/client'
 import {
   ApplicationCommandOptionType,
   ChannelType,
-  ChatInputCommandInteraction,
+  type ChatInputCommandInteraction,
 } from 'discord.js'
 import type { GuildBasedChannel } from 'discord.js'
+import { clean } from '#groups'
+import CronManager from '#structures/Cron'
+import AliceaExt from '#structures/Extension'
 
 const cleanChannel = async (db: PrismaClient, chn?: GuildBasedChannel) => {
   if (!chn) return
@@ -56,9 +56,9 @@ class Clean extends AliceaExt {
           jobs
             .flatMap(
               (job) =>
-                this.client.channels.cache.get(job.id) as GuildBasedChannel
+                this.client.channels.cache.get(job.id) as GuildBasedChannel,
             )
-            .map((c) => cleanChannel(this.db, c))
+            .map((c) => cleanChannel(this.db, c)),
         )
       },
     })
@@ -82,7 +82,7 @@ class Clean extends AliceaExt {
       name: 'clean_allowed',
       description: 'Clean allowed?',
     })
-    cleanAllowed?: boolean
+    cleanAllowed?: boolean,
   ) {
     if (!i.guild) return
 
@@ -119,7 +119,7 @@ class Clean extends AliceaExt {
     })
 
     await i.editReply(
-      '✅ Set channel to clean periodically\n*restart required*'
+      '✅ Set channel to clean periodically\n*restart required*',
     )
   }
 
@@ -153,9 +153,9 @@ class Clean extends AliceaExt {
           (channel) =>
             `<#${channel.id}>${
               channel.cleanAllowed ? '(manual clean allowed)' : ''
-            }`
+            }`,
         )
-        .join(', ')}`
+        .join(', ')}`,
     )
   }
 

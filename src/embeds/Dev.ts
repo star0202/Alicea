@@ -1,6 +1,6 @@
+import { basename } from 'path'
 import { Emojis } from '#constants'
 import AliceaEmbed from '#structures/Embed'
-import { basename } from 'path'
 
 export class Eval {
   private static default = (code: string) =>
@@ -43,13 +43,13 @@ export class Reload {
         else acc.fail.push(x)
         return acc
       },
-      { success: [] as ReloadResult[], fail: [] as ReloadResult[] }
+      { success: [] as ReloadResult[], fail: [] as ReloadResult[] },
     )
 
     return new AliceaEmbed()
       .setTitle('Every module reloaded')
       .setDescription(
-        `${Emojis.Success} ${success.length} ${Emojis.Fail} ${fail.length}`
+        `${Emojis.Success} ${success.length} ${Emojis.Fail} ${fail.length}`,
       )
       .addFields(
         {
@@ -59,7 +59,7 @@ export class Reload {
         {
           name: 'Fail',
           value: fail.map((x) => basename(x.file)).join('\n') || '*None*',
-        }
+        },
       )
   }
 }

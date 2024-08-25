@@ -5,7 +5,7 @@ export default class CronManager {
 
   add(config: { cronTime: string; onTick: () => void }) {
     this.jobs.push(
-      new CronJob({ ...config, timeZone: 'Asia/Seoul', start: true })
+      new CronJob({ ...config, timeZone: 'Asia/Seoul', start: true }),
     )
   }
 }

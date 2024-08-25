@@ -1,10 +1,10 @@
-import { logging } from '#groups'
-import AliceaExt from '#structures/Extension'
 import { option, ownerOnly } from '@pikokr/command.ts'
 import {
   ApplicationCommandOptionType,
-  ChatInputCommandInteraction,
+  type ChatInputCommandInteraction,
 } from 'discord.js'
+import { logging } from '#groups'
+import AliceaExt from '#structures/Extension'
 
 class Setting extends AliceaExt {
   @ownerOnly
@@ -19,7 +19,7 @@ class Setting extends AliceaExt {
       name: 'channel',
       description: 'Log channel',
     })
-    channel?: string
+    channel?: string,
   ) {
     if (!i.guild) return
 
@@ -86,7 +86,7 @@ class Setting extends AliceaExt {
       name: 'user',
       description: 'User to ignore',
     })
-    user?: string
+    user?: string,
   ) {
     if (!i.guild) return
 
@@ -204,7 +204,7 @@ class Setting extends AliceaExt {
         .map((chn) => `<#${chn.id}>`)
         .join(', ')}\nIgnored users: ${ignoredUsers
         .map((u) => `<@${u.id}>`)
-        .join(', ')}`
+        .join(', ')}`,
     )
   }
 }

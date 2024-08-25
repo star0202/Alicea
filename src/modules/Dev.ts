@@ -1,16 +1,10 @@
-import { ownerOnly } from '#checks/owner'
-import { Emojis } from '#constants'
-import { Eval, Reload, Sync } from '#embeds/Dev'
-import AliceaError from '#structures/Error'
-import AliceaExt from '#structures/Extension'
-import { toString } from '#utils/object'
 import { applicationCommand, listener } from '@pikokr/command.ts'
 import { blue, green, yellow } from 'chalk'
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
 import {
   ApplicationCommandOptionType,
   ApplicationCommandType,
-  ChatInputCommandInteraction,
+  type ChatInputCommandInteraction,
 } from 'discord.js'
 import type {
   CommandInteractionOption,
@@ -18,10 +12,16 @@ import type {
   Interaction,
   Message,
 } from 'discord.js'
+import { ownerOnly } from '#checks/owner'
+import { Emojis } from '#constants'
+import { Eval, Reload, Sync } from '#embeds/Dev'
+import AliceaError from '#structures/Error'
+import AliceaExt from '#structures/Extension'
+import { toString } from '#utils/object'
 
 const commandLog = (data: CommandInteractionOption, indents = 0) =>
   `\n${' '.repeat(indents * 2)}- ${green(data.name)}: ${blue(
-    data.value
+    data.value,
   )} (${yellow(ApplicationCommandOptionType[data.type])})`
 
 class Dev extends AliceaExt {
@@ -40,17 +40,17 @@ class Dev extends AliceaExt {
       data.type !== ApplicationCommandOptionType.Subcommand
         ? commandLog(data)
         : `\n- ${green(data.name)}: (${yellow('Subcommand')})` +
-          data.options?.map((x) => commandLog(x, 1))
+          data.options?.map((x) => commandLog(x, 1)),
     )
 
     const guild = i.guild
       ? `${green(`#${(i.channel as GuildBasedChannel).name}`)}(${blue(
-          i.channelId
+          i.channelId,
         )}) at ${green(i.guild.name)}(${blue(i.guild.id)})`
       : 'DM'
 
     const msg = `${green(i.user.tag)}(${blue(
-      i.user.id
+      i.user.id,
     )}) in ${guild}: ${yellow.bold(`/${i.commandName}`)}${options}`
 
     this.logger.info(msg)
@@ -137,7 +137,7 @@ class Dev extends AliceaExt {
           new ButtonBuilder()
             .setStyle(ButtonStyle.Link)
             .setLabel('Jump to message')
-            .setURL(msg.url)
+            .setURL(msg.url),
         ),
       ],
     })

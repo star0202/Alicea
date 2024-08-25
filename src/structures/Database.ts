@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import { blue, yellow } from 'chalk'
 import type { Logger } from 'tslog'
 
@@ -28,7 +28,7 @@ export default class Database extends PrismaClient {
           .slice(1, -1)
           .split(',')
           .map((param) => blue.bold(param))
-          .join(', ')}] - ${yellow.bold(`${e.duration}ms`)}`
+          .join(', ')}] - ${yellow.bold(`${e.duration}ms`)}`,
       )
     })
   }

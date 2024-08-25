@@ -1,16 +1,16 @@
-import _ from 'lodash'
 import { inspect } from 'util'
+import _ from 'lodash'
 
 export const diff = <T extends object, F extends object>(
   after: T,
-  before: F
+  before: F,
 ): { original: Partial<F>; updated: Partial<T> } => {
   const diff = { original: {}, updated: {} }
 
   _.differenceWith(
     Object.entries(after),
     Object.entries(before),
-    _.isEqual
+    _.isEqual,
   ).forEach(([k, v]) => {
     Object.defineProperty(diff.original, k, {
       value: before[k as keyof typeof before],

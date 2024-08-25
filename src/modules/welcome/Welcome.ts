@@ -1,14 +1,14 @@
-import Confirm from '#components/Confirm'
-import { welcome } from '#groups'
-import AliceaExt from '#structures/Extension'
 import { listener, ownerOnly } from '@pikokr/command.ts'
 import type { GuildMember } from 'discord.js'
 import {
   ActionRowBuilder,
-  ChatInputCommandInteraction,
+  type ChatInputCommandInteraction,
   ComponentType,
   RoleSelectMenuBuilder,
 } from 'discord.js'
+import Confirm from '#components/Confirm'
+import { welcome } from '#groups'
+import AliceaExt from '#structures/Extension'
 
 class Welcome extends AliceaExt {
   @listener({ event: 'guildMemberAdd' })
@@ -49,13 +49,13 @@ class Welcome extends AliceaExt {
         new ActionRowBuilder<RoleSelectMenuBuilder>().addComponents(
           new RoleSelectMenuBuilder()
             .setCustomId('user')
-            .setPlaceholder('Select user role')
+            .setPlaceholder('Select user role'),
         ),
 
         new ActionRowBuilder<RoleSelectMenuBuilder>().addComponents(
           new RoleSelectMenuBuilder()
             .setCustomId('bot')
-            .setPlaceholder('Select bot role')
+            .setPlaceholder('Select bot role'),
         ),
 
         new Confirm(),
