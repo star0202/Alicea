@@ -6,8 +6,8 @@ import type { GatewayIntentBits, Partials } from 'discord.js'
 import type { Logger } from 'tslog'
 import { config } from '../config'
 import { VERSION } from '../constants'
-import Database from './Database'
 import { getHeadRevision } from '../utils/git'
+import Database from './Database'
 
 export default class Alicea extends CommandClient {
   readonly startedAt = Date.now()
