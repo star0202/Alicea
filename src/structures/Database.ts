@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-import type { Prisma } from '@prisma/client'
+import { PrismaClient, type Prisma } from '@prisma/client'
 import { blue, yellow } from 'chalk'
 import type { Logger } from 'tslog'
 

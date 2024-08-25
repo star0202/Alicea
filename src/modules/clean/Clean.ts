@@ -1,21 +1,26 @@
-import { option, ownerOnly } from '@pikokr/command.ts'
-import type { PrismaClient } from '@prisma/client'
+import { moduleHook, option, ownerOnly } from '@pikokr/command.ts'
 import {
   ApplicationCommandOptionType,
   ChannelType,
   ChatInputCommandInteraction,
 } from 'discord.js'
-import type { GuildBasedChannel } from 'discord.js'
+import type { Channel } from 'discord.js'
 import { clean } from '#groups'
+import type Database from '#structures/Database'
 import CronManager from '#structures/Cron'
 import AliceaExt from '#structures/Extension'
 
-const cleanChannel = async (db: PrismaClient, chn?: GuildBasedChannel) => {
+const cleanChannel = async (db: Database, chn: Channel | null) => {
   if (!chn) return
 
   if (!(chn.type === ChannelType.GuildText)) return
 
   const newChannel = await chn.clone()
+
+  const now = new Date(Date.now() + 9 * 60 * 60 * 1000)
+  await newChannel.setName(
+    `${chn.name.split('-')[0]}-${now.toISOString().slice(0, 10)}`,
+  )
 
   await db.cleanChannel.updateMany({
     where: {
@@ -51,15 +56,11 @@ class Clean extends AliceaExt {
       cronTime: '0 6 * * *',
       onTick: async () => {
         const jobs = await this.db.cleanChannel.findMany()
-
-        Promise.all(
-          jobs
-            .flatMap(
-              (job) =>
-                this.client.channels.cache.get(job.id) as GuildBasedChannel,
-            )
-            .map((c) => cleanChannel(this.db, c)),
+        const channels = await Promise.all(
+          jobs.map((c) => this.client.channels.fetch(c.id)),
         )
+
+        Promise.all(channels.map((c) => cleanChannel(this.db, c)))
       },
     })
   }
@@ -195,6 +196,11 @@ class Clean extends AliceaExt {
 
       return
     }
+  }
+
+  @moduleHook('unload')
+  async unload() {
+    this.cron.stop()
   }
 }
 

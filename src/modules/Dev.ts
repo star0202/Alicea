@@ -16,12 +16,11 @@ import type {
   MessageCreateOptions,
 } from 'discord.js'
 import AliceaExt from '#structures/Extension'
-import { ownerOnly } from '../checks/owner'
-import { Emojis } from '../constants'
-import { Eval, Info, Notice, Reload, Sync } from '../embeds/Dev'
-import type CustomClient from '../structures/Client'
-import KnownError from '../structures/Error'
-import { inspect } from '../utils/object'
+import { ownerOnly } from '#checks/owner'
+import { Emojis } from '#constants'
+import { Eval, Info, Notice, Reload, Sync } from '#embeds/Dev'
+import KnownError from '#structures/Error'
+import { inspect } from '#utils/object'
 
 export type NoticeResult = {
   guild: Guild

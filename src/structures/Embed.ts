@@ -6,8 +6,8 @@ import type {
   RestOrArray,
   User,
 } from 'discord.js'
-import { Colors } from '../constants'
-import { toTimestamp } from '../utils/time'
+import { Colors } from '#constants'
+import { toTimestamp } from '#utils/time'
 
 const chunk = (content: string, limit = 1024 - 10) => {
   const chunked = []
