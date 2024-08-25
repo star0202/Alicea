@@ -5,7 +5,7 @@ import type {
   TextBasedChannel,
   VoiceState,
 } from 'discord.js'
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, codeBlock } from 'discord.js'
 import type { Channel, User } from 'discord.js'
 import { Colors } from '../../constants'
 import type Database from '../../structures/Database'
@@ -74,11 +74,11 @@ class Logging extends AliceaExt {
           .addChunkedFields(
             {
               name: 'Original',
-              value: inspect(msgDiff.original),
+              value: codeBlock('ts', inspect(msgDiff.original)),
             },
             {
               name: 'Updated',
-              value: inspect(msgDiff.updated),
+              value: codeBlock('ts', inspect(msgDiff.updated)),
             },
           )
           .setUNIXTimestamp(),
@@ -124,7 +124,7 @@ class Logging extends AliceaExt {
           )
           .addChunkedFields({
             name: 'Object',
-            value: inspect(msg),
+            value: codeBlock('ts', inspect(msg)),
           })
           .setUNIXTimestamp(),
       ],
@@ -164,7 +164,7 @@ class Logging extends AliceaExt {
           )
           .addChunkedFields({
             name: 'Object',
-            value: inspect(member, ['guild']),
+            value: codeBlock('ts', inspect(member, ['guild'])),
           })
           .setUNIXTimestamp(),
       ],
@@ -211,7 +211,7 @@ class Logging extends AliceaExt {
           )
           .addChunkedFields({
             name: 'Object',
-            value: inspect(member, ['guild']),
+            value: codeBlock('ts', inspect(member, ['guild'])),
           })
           .setUNIXTimestamp(),
       ],
@@ -292,11 +292,11 @@ class Logging extends AliceaExt {
         embed.addChunkedFields(
           {
             name: 'Old',
-            value: inspect(stateDiff.original),
+            value: codeBlock('ts', inspect(stateDiff.original)),
           },
           {
             name: 'New',
-            value: inspect(stateDiff.updated),
+            value: codeBlock('ts', inspect(stateDiff.updated)),
           },
         ),
       ],
