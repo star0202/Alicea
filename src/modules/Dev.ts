@@ -18,7 +18,7 @@ import type {
 import { ownerOnly } from '../checks/owner'
 import { Emojis } from '../constants'
 import { Eval, Info, Notice, Reload, Sync } from '../embeds/Dev'
-import KnownError from '../structures/Error'
+import AliceaError from '../structures/Error'
 import AliceaExt from '../structures/Extension'
 import { inspect } from '../utils/object'
 
@@ -35,7 +35,7 @@ const commandLog = (data: CommandInteractionOption, indents = 0) =>
 class Dev extends AliceaExt {
   @listener({ event: 'applicationCommandInvokeError', emitter: 'cts' })
   async errorLogger(err: Error) {
-    if (err instanceof KnownError) return this.logger.warn(err.message)
+    if (err instanceof AliceaError) return this.logger.warn(err.message)
 
     this.logger.error(err.stack)
   }
