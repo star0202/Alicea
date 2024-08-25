@@ -29,3 +29,8 @@ export const raid = new SubCommandGroup({
   name: 'raid',
   description: 'Raid',
 })
+
+export const moderation = new SubCommandGroup({
+  name: 'moderation',
+  description: 'Moderation',
+})
