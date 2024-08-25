@@ -5,10 +5,10 @@ import {
   ChatInputCommandInteraction,
 } from 'discord.js'
 import type { Channel } from 'discord.js'
-import { clean } from '#groups'
-import type Database from '#structures/Database'
-import CronManager from '#structures/Cron'
-import AliceaExt from '#structures/Extension'
+import { clean } from '../../groups'
+import CronManager from '../../structures/Cron'
+import type Database from '../../structures/Database'
+import AliceaExt from '../../structures/Extension'
 
 const cleanChannel = async (db: Database, chn: Channel | null) => {
   if (!chn) return

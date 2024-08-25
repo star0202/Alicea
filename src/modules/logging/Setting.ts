@@ -3,8 +3,8 @@ import {
   ApplicationCommandOptionType,
   ChatInputCommandInteraction,
 } from 'discord.js'
-import { logging } from '#groups'
-import AliceaExt from '#structures/Extension'
+import { logging } from '../../groups'
+import AliceaExt from '../../structures/Extension'
 
 class Setting extends AliceaExt {
   @ownerOnly

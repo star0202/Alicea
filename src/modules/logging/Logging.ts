@@ -7,13 +7,13 @@ import type {
 } from 'discord.js'
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
 import type { Channel, User } from 'discord.js'
-import { Colors } from '#constants'
-import type Database from '#structures/Database'
-import AliceaEmbed from '#structures/Embed'
-import AliceaExt from '#structures/Extension'
-import { diff } from '#utils/object'
-import { inspect } from '#utils/object'
-import { toTimestamp } from '#utils/time'
+import { Colors } from '../../constants'
+import type Database from '../../structures/Database'
+import AliceaEmbed from '../../structures/Embed'
+import AliceaExt from '../../structures/Extension'
+import { diff } from '../../utils/object'
+import { inspect } from '../../utils/object'
+import { toTimestamp } from '../../utils/time'
 
 const isIgnored = async (
   data: { id: string; channel: string },

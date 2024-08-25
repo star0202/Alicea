@@ -1,4 +1,4 @@
-import AliceaEmbed from '#structures/Embed'
+import AliceaEmbed from '../structures/Embed'
 
 export const Permission = {
   notOwner: () =>

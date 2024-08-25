@@ -1,10 +1,10 @@
 import { basename } from 'node:path'
 import { codeBlock } from 'discord.js'
-import { Emojis } from '#constants'
-import type { NoticeResult } from '#modules/Dev'
-import CustomEmbed from '#structures/Embed'
-import { formatMemory } from '#utils/memory'
-import { toTimestamp } from '#utils/time'
+import { Emojis } from '../constants'
+import type { NoticeResult } from '../modules/Dev'
+import CustomEmbed from '../structures/Embed'
+import { formatMemory } from '../utils/memory'
+import { toTimestamp } from '../utils/time'
 
 export const Eval = {
   default: (code: string) =>

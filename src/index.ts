@@ -1,7 +1,7 @@
 import { GatewayIntentBits, Partials } from 'discord.js'
 import { Logger } from 'tslog'
-import { config } from '#config'
-import Alicea from '#structures/Client'
+import { config } from './config'
+import Alicea from './structures/Client'
 
 const logger = new Logger({
   name: 'Main',

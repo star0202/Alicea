@@ -5,8 +5,8 @@ import { ActivityType, Client, Events } from 'discord.js'
 import type { GatewayIntentBits, Partials } from 'discord.js'
 import { short } from 'git-rev-sync'
 import type { Logger } from 'tslog'
-import { config } from '#config'
-import { VERSION } from '#constants'
+import { config } from '../config'
+import { VERSION } from '../constants'
 import Database from './Database'
 
 export default class Alicea extends CommandClient {
