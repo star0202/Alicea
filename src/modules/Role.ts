@@ -8,9 +8,9 @@ import {
   RoleSelectMenuBuilder,
 } from 'discord.js'
 import type { MessageComponentInteraction } from 'discord.js'
-import Confirm from '../../components/Confirm'
-import { role } from '../../groups'
-import AliceaExt from '../../structures/Extension'
+import Confirm from '../components/Confirm'
+import { role } from '../groups'
+import AliceaExt from '../structures/Extension'
 
 const buttonStyleCycle = [
   ButtonStyle.Primary,

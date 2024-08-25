@@ -3,8 +3,8 @@ import {
   ApplicationCommandOptionType,
   ChatInputCommandInteraction,
 } from 'discord.js'
-import { moderation } from '../../groups'
-import AliceaExt from '../../structures/Extension'
+import { moderation } from '../groups'
+import AliceaExt from '../structures/Extension'
 
 class Moderation extends AliceaExt {
   @ownerOnly

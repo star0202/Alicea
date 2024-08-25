@@ -11,11 +11,11 @@ import {
   ComponentType,
   RoleSelectMenuBuilder,
 } from 'discord.js'
-import { Colors } from '../../constants'
-import { raid } from '../../groups'
-import AliceaEmbed from '../../structures/Embed'
-import AliceaExt from '../../structures/Extension'
-import { toTimestamp } from '../../utils/time'
+import { Colors } from '../constants'
+import { raid } from '../groups'
+import AliceaEmbed from '../structures/Embed'
+import AliceaExt from '../structures/Extension'
+import { toTimestamp } from '../utils/time'
 
 class Raid extends AliceaExt {
   @listener({ event: 'guildMemberAdd' })

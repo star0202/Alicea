@@ -6,9 +6,9 @@ import {
   ComponentType,
   RoleSelectMenuBuilder,
 } from 'discord.js'
-import Confirm from '../../components/Confirm'
-import { welcome } from '../../groups'
-import AliceaExt from '../../structures/Extension'
+import Confirm from '../components/Confirm'
+import { welcome } from '../groups'
+import AliceaExt from '../structures/Extension'
 
 class Welcome extends AliceaExt {
   @listener({ event: 'guildMemberAdd' })
