@@ -3,11 +3,11 @@ import { CommandClient } from '@pikokr/command.ts'
 import { green } from 'chalk'
 import { ActivityType, Client, Events } from 'discord.js'
 import type { GatewayIntentBits, Partials } from 'discord.js'
-import { short } from 'git-rev-sync'
 import type { Logger } from 'tslog'
 import { config } from '../config'
 import { VERSION } from '../constants'
 import Database from './Database'
+import { getHeadRevision } from '../utils/git'
 
 export default class Alicea extends CommandClient {
   readonly startedAt = Date.now()
@@ -27,7 +27,7 @@ export default class Alicea extends CommandClient {
         presence: {
           activities: [
             {
-              name: `${VERSION} (${short() ?? 'N/A'})`,
+              name: `${VERSION} (${getHeadRevision().slice(0, 7) ?? 'N/A'})`,
               type: ActivityType.Playing,
             },
           ],
