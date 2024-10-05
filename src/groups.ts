@@ -34,3 +34,8 @@ export const moderation = new SubCommandGroup({
   name: 'moderation',
   description: 'Moderation',
 })
+
+export const emoji = new SubCommandGroup({
+  name: 'emoji',
+  description: 'Emoji',
+})
