@@ -1,10 +1,11 @@
 import { inspect as nodeInspect } from 'node:util'
 import _ from 'lodash'
 
-export const diff = <T extends object, F extends object>(
-  after: T,
-  before: F,
-): { original: Partial<F>; updated: Partial<T> } => {
+export const diff = <T extends object, F extends object>(args: {
+  before: T
+  after: F
+}): { original: Partial<T>; updated: Partial<T> } => {
+  const { before, after } = args
   const diff = { original: {}, updated: {} }
 
   for (const [k, v] of _.differenceWith(

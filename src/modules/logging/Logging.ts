@@ -64,7 +64,7 @@ class Logging extends AliceaExt {
       data.channel,
     ) as TextBasedChannel
 
-    const msgDiff = diff(after, before)
+    const msgDiff = diff({ before, after })
 
     await channel.send({
       embeds: [
@@ -250,7 +250,10 @@ class Logging extends AliceaExt {
         inline: true,
       })
 
-    const stateDiff = diff(newState, oldState)
+    const stateDiff = diff({
+      before: oldState,
+      after: newState,
+    })
 
     if (oldState.channelId && !newState.channelId) {
       embed
