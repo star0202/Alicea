@@ -2,7 +2,7 @@ import { type Prisma, PrismaClient } from '@prisma/client'
 import { blue, yellow } from 'chalk'
 import type { Logger } from 'tslog'
 
-const clientConfig = {
+const config = {
   errorFormat: 'pretty' as const,
   log: [
     {
@@ -12,11 +12,11 @@ const clientConfig = {
   ],
 }
 
-export default class Database extends PrismaClient<typeof clientConfig> {
+export default class Database extends PrismaClient<typeof config> {
   logger: Logger<unknown>
 
   constructor(logger: Logger<unknown>) {
-    super(clientConfig)
+    super(config)
 
     this.logger = logger.getSubLogger({
       name: 'DB',
