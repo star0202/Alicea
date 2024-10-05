@@ -8,11 +8,8 @@
     "rules": {
       "recommended": true,
       "style": {
-        "useImportType": {
-          "level": "warn",
-          "fix": "none"
-        },
-        "noNonNullAssertion": "warn"
+        "useImportType": "off",
+        "noNonNullAssertion": "off"
       }
     }
   },

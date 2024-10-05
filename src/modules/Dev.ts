@@ -199,7 +199,6 @@ class Dev extends AliceaExt {
     try {
       const payloads = JSON.parse(
         Buffer.from(
-          // biome-ignore lint/style/noNonNullAssertion: param data is always exist
           new URL(msgURL).searchParams.get('data')!,
           'base64',
         ).toString(),
