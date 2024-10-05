@@ -1,9 +1,3 @@
-import { COLORS } from '../../constants'
-import type Database from '../../structures/Database'
-import AliceaEmbed from '../../structures/Embed'
-import AliceaExt from '../../structures/Extension'
-import { diff } from '../../utils/object'
-import { toTimestamp } from '../../utils/timestamp'
 import { listener } from '@pikokr/command.ts'
 import type {
   GuildMember,
@@ -11,14 +5,26 @@ import type {
   TextBasedChannel,
   VoiceState,
 } from 'discord.js'
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js'
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  codeBlock,
+} from 'discord.js'
 import type { Channel, User } from 'discord.js'
+import { Colors } from '../../constants'
+import type Database from '../../structures/Database'
+import AliceaEmbed from '../../structures/Embed'
+import AliceaExt from '../../structures/Extension'
+import { diff } from '../../utils/object'
+import { inspect } from '../../utils/object'
+import { toTimestamp } from '../../utils/time'
 
 const isIgnored = async (
   data: { id: string; channel: string },
   db: Database,
   user?: User,
-  channel?: Channel
+  channel?: Channel,
 ) => {
   if (user?.bot) return true
 
@@ -55,30 +61,30 @@ class Logging extends AliceaExt {
     if (await isIgnored(data, this.db, before.author, before.channel)) return
 
     const channel = before.guild.channels.cache.get(
-      data.channel
+      data.channel,
     ) as TextBasedChannel
 
-    const msgDiff = diff(after, before)
+    const msgDiff = diff({ before, after })
 
     await channel.send({
       embeds: [
         new AliceaEmbed()
           .setTitle('Message Updated')
-          .setColor(COLORS.YELLOW)
+          .setColor(Colors.Yellow)
           .setDetailedAuthor(before.author)
           .addFields(
             { name: 'User', value: `<@${after.author.id}>`, inline: true },
-            { name: 'Channel', value: `<#${after.channelId}>`, inline: true }
+            { name: 'Channel', value: `<#${after.channelId}>`, inline: true },
           )
           .addChunkedFields(
             {
               name: 'Original',
-              value: msgDiff.original,
+              value: codeBlock('ts', inspect(msgDiff.original)),
             },
             {
               name: 'Updated',
-              value: msgDiff.updated,
-            }
+              value: codeBlock('ts', inspect(msgDiff.updated)),
+            },
           )
           .setUNIXTimestamp(),
       ],
@@ -87,7 +93,7 @@ class Logging extends AliceaExt {
           new ButtonBuilder()
             .setStyle(ButtonStyle.Link)
             .setURL(after.url)
-            .setLabel('Go To Message')
+            .setLabel('Go To Message'),
         ),
       ],
     })
@@ -108,23 +114,22 @@ class Logging extends AliceaExt {
     if (await isIgnored(data, this.db, msg.author, msg.channel)) return
 
     const channel = msg.guild.channels.cache.get(
-      data.channel
+      data.channel,
     ) as TextBasedChannel
 
     await channel.send({
       embeds: [
         new AliceaEmbed()
           .setTitle('Message Deleted')
-          .setColor(COLORS.RED)
+          .setColor(Colors.Red)
           .setDetailedAuthor(msg.author)
           .addFields(
             { name: 'User', value: `<@${msg.author.id}>`, inline: true },
-            { name: 'Channel', value: `<#${msg.channelId}>`, inline: true }
+            { name: 'Channel', value: `<#${msg.channelId}>`, inline: true },
           )
           .addChunkedFields({
             name: 'Object',
-            value: msg,
-            ignore: ['author'],
+            value: codeBlock('ts', inspect(msg)),
           })
           .setUNIXTimestamp(),
       ],
@@ -145,14 +150,14 @@ class Logging extends AliceaExt {
     if (await isIgnored(data, this.db, member.user)) return
 
     const channel = member.guild.channels.cache.get(
-      data.channel
+      data.channel,
     ) as TextBasedChannel
 
     await channel.send({
       embeds: [
         new AliceaEmbed()
           .setTitle('Member Joined')
-          .setColor(COLORS.GREEN)
+          .setColor(Colors.Green)
           .setDetailedAuthor(member)
           .addFields(
             { name: 'User', value: `<@${member.user.id}>`, inline: true },
@@ -160,12 +165,11 @@ class Logging extends AliceaExt {
               name: 'Created At',
               value: `<t:${toTimestamp(member.user.createdAt)}:R>`,
               inline: true,
-            }
+            },
           )
           .addChunkedFields({
             name: 'Object',
-            value: member,
-            ignore: ['guild'],
+            value: codeBlock('ts', inspect(member, ['guild'])),
           })
           .setUNIXTimestamp(),
       ],
@@ -187,14 +191,14 @@ class Logging extends AliceaExt {
     if (await isIgnored(data, this.db, member.user)) return
 
     const channel = member.guild.channels.cache.get(
-      data.channel
+      data.channel,
     ) as TextBasedChannel
 
     await channel.send({
       embeds: [
         new AliceaEmbed()
           .setTitle('Member Left')
-          .setColor(COLORS.RED)
+          .setColor(Colors.Red)
           .setDetailedAuthor(member)
           .addFields(
             {
@@ -208,12 +212,11 @@ class Logging extends AliceaExt {
                 ? `<t:${toTimestamp(member.joinedAt)}:R>`
                 : 'N/A',
               inline: true,
-            }
+            },
           )
           .addChunkedFields({
             name: 'Object',
-            value: member,
-            ignore: ['guild'],
+            value: codeBlock('ts', inspect(member, ['guild'])),
           })
           .setUNIXTimestamp(),
       ],
@@ -235,7 +238,7 @@ class Logging extends AliceaExt {
     if (await isIgnored(data, this.db, newState.member.user)) return
 
     const channel = newState.guild.channels.cache.get(
-      data.channel
+      data.channel,
     ) as TextBasedChannel
 
     const embed = new AliceaEmbed()
@@ -247,12 +250,15 @@ class Logging extends AliceaExt {
         inline: true,
       })
 
-    const stateDiff = diff(newState, oldState)
+    const stateDiff = diff({
+      before: oldState,
+      after: newState,
+    })
 
     if (oldState.channelId && !newState.channelId) {
       embed
         .setTitle('Left Voice Channel')
-        .setColor(COLORS.RED)
+        .setColor(Colors.Red)
         .addFields({
           name: 'Channel',
           value: `<#${oldState.channelId}>`,
@@ -261,7 +267,7 @@ class Logging extends AliceaExt {
     } else if (newState.channelId && !oldState.channelId) {
       embed
         .setTitle('Joined Voice Channel')
-        .setColor(COLORS.GREEN)
+        .setColor(Colors.Green)
         .addFields({
           name: 'Channel',
           value: `<#${newState.channelId}>`,
@@ -274,7 +280,7 @@ class Logging extends AliceaExt {
     ) {
       embed
         .setTitle('Moved Voice Channel')
-        .setColor(COLORS.YELLOW)
+        .setColor(Colors.Yellow)
         .addFields(
           {
             name: 'Old Channel',
@@ -285,21 +291,21 @@ class Logging extends AliceaExt {
             name: 'New Channel',
             value: `<#${newState.channelId}>`,
             inline: true,
-          }
+          },
         )
-    } else embed.setTitle('Voice State Updated').setColor(COLORS.YELLOW)
+    } else embed.setTitle('Voice State Updated').setColor(Colors.Yellow)
 
     await channel.send({
       embeds: [
         embed.addChunkedFields(
           {
             name: 'Old',
-            value: stateDiff.original,
+            value: codeBlock('ts', inspect(stateDiff.original)),
           },
           {
             name: 'New',
-            value: stateDiff.updated,
-          }
+            value: codeBlock('ts', inspect(stateDiff.updated)),
+          },
         ),
       ],
     })

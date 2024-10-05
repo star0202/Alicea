@@ -1,17 +1,18 @@
-import { differenceWith, isEqual } from 'lodash'
-import { inspect } from 'util'
+import { inspect as nodeInspect } from 'node:util'
+import _ from 'lodash'
 
-export const diff = (
-  after: object,
-  before: object
-): { original: object; updated: object } => {
+export const diff = <T extends object, F extends object>(args: {
+  before: T
+  after: F
+}): { original: Partial<T>; updated: Partial<T> } => {
+  const { before, after } = args
   const diff = { original: {}, updated: {} }
 
-  differenceWith(
+  for (const [k, v] of _.differenceWith(
     Object.entries(after),
     Object.entries(before),
-    isEqual
-  ).forEach(([k, v]) => {
+    _.isEqual,
+  )) {
     Object.defineProperty(diff.original, k, {
       value: before[k as keyof typeof before],
       enumerable: true,
@@ -21,19 +22,24 @@ export const diff = (
       value: v,
       enumerable: true,
     })
-  })
+  }
 
   return diff
 }
 
-export const toString = <T>(obj: T, ignore?: (keyof T)[]): string => {
-  const copied = structuredClone(obj)
-
+export const inspect = <T>(obj: T, ignore?: (keyof T)[]): string => {
+  let cur = obj
   if (ignore) {
-    ignore.forEach((key) => delete copied[key])
+    try {
+      cur = structuredClone(obj)
+    } catch (e) {
+      console.error(e)
+    }
+
+    for (const key of ignore) delete cur[key]
   }
 
-  return inspect(copied, {
+  return nodeInspect(cur, {
     maxArrayLength: 200,
     depth: 2,
   })

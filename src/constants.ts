@@ -1,8 +1,10 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+import { Colors as DJSColors } from 'discord.js'
+
 export const VERSION = require('../package.json').version as string
 
-export enum COLORS {
-  RED = 0xff0000,
-  YELLOW = 0xffff00,
-  GREEN = 0x1dd75f,
-}
+export const Colors = { ...DJSColors, Default: 0x2b2d31 as const }
+
+export const Emojis = {
+  Success: '✅',
+  Fail: '❌',
+} as const

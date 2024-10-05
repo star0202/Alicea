@@ -1,16 +1,16 @@
-import { clean } from '../../groups'
-import CronManager from '../../structures/Cron'
-import AliceaExt from '../../structures/Extension'
 import { moduleHook, option, ownerOnly } from '@pikokr/command.ts'
-import { PrismaClient } from '@prisma/client'
 import {
   ApplicationCommandOptionType,
   ChannelType,
   ChatInputCommandInteraction,
 } from 'discord.js'
 import type { Channel } from 'discord.js'
+import { clean } from '../groups'
+import CronManager from '../structures/Cron'
+import type Database from '../structures/Database'
+import AliceaExt from '../structures/Extension'
 
-const cleanChannel = async (db: PrismaClient, chn: Channel | null) => {
+const cleanChannel = async (db: Database, chn: Channel | null) => {
   if (!chn) return
 
   if (!(chn.type === ChannelType.GuildText)) return
@@ -19,7 +19,7 @@ const cleanChannel = async (db: PrismaClient, chn: Channel | null) => {
 
   const now = new Date(Date.now() + 9 * 60 * 60 * 1000)
   await newChannel.setName(
-    `${chn.name.split('-')[0]}-${now.toISOString().slice(0, 10)}`
+    `${chn.name.split('-')[0]}-${now.toISOString().slice(0, 10)}`,
   )
 
   await db.cleanChannel.updateMany({
@@ -57,7 +57,7 @@ class Clean extends AliceaExt {
       onTick: async () => {
         const jobs = await this.db.cleanChannel.findMany()
         const channels = await Promise.all(
-          jobs.map((c) => this.client.channels.fetch(c.id))
+          jobs.map((c) => this.client.channels.fetch(c.id)),
         )
 
         Promise.all(channels.map((c) => cleanChannel(this.db, c)))
@@ -83,7 +83,7 @@ class Clean extends AliceaExt {
       name: 'clean_allowed',
       description: 'Clean allowed?',
     })
-    cleanAllowed?: boolean
+    cleanAllowed?: boolean,
   ) {
     if (!i.guild) return
 
@@ -100,7 +100,7 @@ class Clean extends AliceaExt {
     })
 
     if (data) {
-      await i.editReply(`✅ Turned off clean`)
+      await i.editReply('✅ Turned off clean')
 
       await this.db.cleanChannel.delete({
         where: {
@@ -120,7 +120,7 @@ class Clean extends AliceaExt {
     })
 
     await i.editReply(
-      '✅ Set channel to clean periodically\n*restart required*'
+      '✅ Set channel to clean periodically\n*restart required*',
     )
   }
 
@@ -143,7 +143,7 @@ class Clean extends AliceaExt {
     })
 
     if (!data) {
-      await i.editReply(`❌ No channel to clean`)
+      await i.editReply('❌ No channel to clean')
 
       return
     }
@@ -154,9 +154,9 @@ class Clean extends AliceaExt {
           (channel) =>
             `<#${channel.id}>${
               channel.cleanAllowed ? '(manual clean allowed)' : ''
-            }`
+            }`,
         )
-        .join(', ')}`
+        .join(', ')}`,
     )
   }
 
@@ -178,13 +178,13 @@ class Clean extends AliceaExt {
     })
 
     if (!data) {
-      await i.editReply(`❌ Channel is not allowed to clean`)
+      await i.editReply('❌ Channel is not allowed to clean')
 
       return
     }
 
     if (!data.cleanAllowed) {
-      await i.editReply(`❌ Clean is not allowed`)
+      await i.editReply('❌ Clean is not allowed')
 
       return
     }
@@ -192,7 +192,7 @@ class Clean extends AliceaExt {
     const chn = await cleanChannel(this.db, i.channel)
 
     if (!chn) {
-      await i.editReply(`❌ Failed to clean channel`)
+      await i.editReply('❌ Failed to clean channel')
 
       return
     }

@@ -1,10 +1,10 @@
-import { moderation } from '../../groups'
-import AliceaExt from '../../structures/Extension'
 import { option, ownerOnly } from '@pikokr/command.ts'
 import {
   ApplicationCommandOptionType,
   ChatInputCommandInteraction,
 } from 'discord.js'
+import { moderation } from '../groups'
+import AliceaExt from '../structures/Extension'
 
 class Moderation extends AliceaExt {
   @ownerOnly
@@ -34,7 +34,7 @@ class Moderation extends AliceaExt {
       description: 'The reason for the timeout',
       required: true,
     })
-    reason: string
+    reason: string,
   ) {
     await i.deferReply()
 

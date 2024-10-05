@@ -1,12 +1,13 @@
-import { toString } from '../utils/object'
-import { toTimestamp } from '../utils/timestamp'
-import {
-  EmbedBuilder,
-  GuildMember,
-  codeBlock,
-  normalizeArray,
+import { EmbedBuilder, GuildMember, normalizeArray } from 'discord.js'
+import type {
+  APIEmbed,
+  APIEmbedField,
+  EmbedData,
+  RestOrArray,
+  User,
 } from 'discord.js'
-import type { APIEmbedField, RestOrArray, User } from 'discord.js'
+import { Colors } from '../constants'
+import { toTimestamp } from '../utils/time'
 
 const chunk = (content: string, limit = 1024 - 10) => {
   const chunked = []
@@ -34,32 +35,14 @@ const chunk = (content: string, limit = 1024 - 10) => {
 }
 
 export default class AliceaEmbed extends EmbedBuilder {
-  addChunkedFields<T>(
-    ...fields: RestOrArray<
-      Omit<APIEmbedField, 'value'> & {
-        value: string | T
-        lang?: string
-        ignore?: (keyof T)[]
-      }
-    >
-  ) {
-    normalizeArray(fields).forEach((field) => {
-      const { lang, ignore, name, value, inline } = field
+  constructor(data?: EmbedData | APIEmbed) {
+    super({ color: Colors.Default, ...data })
+  }
 
-      const chunked = chunk(
-        typeof value === 'string' ? value : toString(value, ignore)
-      )
-
-      chunked.forEach((v, idx) =>
-        this.addFields({
-          name: `${name} ${idx + 1}/${chunked.length}`,
-          value: codeBlock(lang ?? 'ts', v),
-          inline,
-        })
-      )
-    })
-
-    return this
+  setUNIXTimestamp(timestamp = Date.now()) {
+    return this.setFooter({
+      text: toTimestamp(timestamp),
+    }).setTimestamp(timestamp)
   }
 
   setDetailedAuthor(userOrMember: User | GuildMember) {
@@ -72,10 +55,43 @@ export default class AliceaEmbed extends EmbedBuilder {
     })
   }
 
-  setUNIXTimestamp(timestamp = Date.now()) {
-    this.setFooter({
-      text: toTimestamp(timestamp),
-    })
-    return this.setTimestamp(timestamp)
+  addChunkedFields(
+    ...fields: RestOrArray<
+      APIEmbedField & {
+        nameF?: (title: string, idx: number, total: number) => string
+        valueF?: (value: string) => string
+      }
+    >
+  ) {
+    for (const field of normalizeArray(fields)) {
+      const { name, value, inline, nameF, valueF } = field
+      let chunked = chunk(value)
+      const originalLength = chunked.length
+      const _nameF =
+        nameF ??
+        (chunked.length > 1
+          ? (name, idx, total) => `${name} ${idx + 1}/${total}`
+          : (name) => name)
+      const _valueF = valueF ?? ((x) => x)
+
+      // TODO: calculate actual size of embed (or use embed paginator)
+      if (chunked.length > 5) {
+        chunked[4] += `\n... and ${chunked
+          .slice(5)
+          .reduce((acc, cur) => acc + cur.split('\n').length, 0)} more lines`
+
+        chunked = chunked.slice(0, 5)
+      }
+
+      this.addFields(
+        chunked.map((v, idx) => ({
+          name: _nameF(name, idx, originalLength),
+          value: _valueF(v),
+          inline,
+        })),
+      )
+    }
+
+    return this
   }
 }

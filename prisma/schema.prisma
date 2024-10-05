@@ -45,10 +45,11 @@ model CleanChannel {
 model Role {
     id String @id @unique
 }
+
 model Raid {
     id String @id @unique
 
     months Int
-    
+
     role String
 }
