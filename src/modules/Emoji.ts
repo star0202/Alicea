@@ -1,12 +1,12 @@
-import AliceaExt from '../structures/Extension'
-import { emoji } from '../groups'
 import { option } from '@pikokr/command.ts'
 import {
-  ChatInputCommandInteraction,
   ApplicationCommandOptionType,
+  ChatInputCommandInteraction,
 } from 'discord.js'
 import { ownerOnly } from '../checks/owner'
+import { emoji } from '../groups'
 import AliceaEmbed from '../structures/Embed'
+import AliceaExt from '../structures/Extension'
 
 class Emoji extends AliceaExt {
   @ownerOnly
